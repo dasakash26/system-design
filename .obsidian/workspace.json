@@ -8,17 +8,31 @@
         "type": "tabs",
         "children": [
           {
-            "id": "42031d276872be39",
+            "id": "2742d201f60e0fad",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "notes/6_Observer Pattern/6_Observer Pattern.md",
+                "file": "Agents.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "6_Observer Pattern"
+              "title": "Agents"
+            }
+          },
+          {
+            "id": "9e43b468342e1e7b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "notes/10_Facade Pattern/10_Facade Pattern.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "10_Facade Pattern"
             }
           }
         ]
@@ -95,7 +109,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "notes/LLD Projects/1_Zomato/1_Zomato.md",
+                "file": "Projects/2_Notification/2_Notification.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -105,7 +119,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for 1_Zomato"
+              "title": "Backlinks for 2_Notification"
             }
           },
           {
@@ -114,12 +128,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "notes/LLD Projects/1_Zomato/1_Zomato.md",
+                "file": "Projects/2_Notification/2_Notification.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from 1_Zomato"
+              "title": "Outgoing links from 2_Notification"
             }
           },
           {
@@ -157,16 +171,17 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "notes/LLD Projects/1_Zomato/1_Zomato.md",
+                "file": "Agents.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 1_Zomato"
+              "title": "Outline of Agents"
             }
           }
-        ]
+        ],
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
@@ -184,49 +199,54 @@
       "bases:Create new base": false
     }
   },
-  "active": "42031d276872be39",
+  "active": "2742d201f60e0fad",
   "lastOpenFiles": [
-    "notes/LLD Projects/1_Zomato/1_Zomato.md",
-    "notes/LLD Projects/1_Zomato",
-    "notes/LLD Projects/0_Notepad/0_Notepad.md",
-    "notes/LLD Projects/0_Notepad",
-    "notes/LLD Projects",
-    "Untitled.md",
+    "notes/10_Facade Pattern/10_Facade Pattern.md",
+    "Agents.md",
+    "scratch/temp_compile/10_Facade_Pattern.md_0.cpp.out",
+    "scratch/temp_compile/10_Facade_Pattern.md_0.cpp",
+    "scratch/temp_compile/1_Software_Design_Principles.md_4.cpp.out",
+    "scratch/temp_compile/1_Software_Design_Principles.md_4.cpp",
+    "scratch/temp_compile/1_Software_Design_Principles.md_3.cpp.o",
+    "scratch/temp_compile/1_Software_Design_Principles.md_3.cpp-9a9f1d9b.o.tmp",
+    "scratch/temp_compile/1_Software_Design_Principles.md_3.cpp",
+    "scratch/temp_compile/1_Software_Design_Principles.md_2.cpp.o",
+    "scratch/temp_compile/1_Software_Design_Principles.md_2.cpp-cddc6aca.o.tmp",
+    "scratch/temp_compile/1_Software_Design_Principles.md_2.cpp",
+    "notes/9_Adapter Pattern/9_Adapter Pattern.md",
+    "notes/8_Command Pattern/8_Command Pattern.md",
+    "notes/7_Decorator Pattern/7_Decorator Pattern.md",
     "notes/6_Observer Pattern/6_Observer Pattern.md",
-    "notes/Projects/1_Zomato/image.png",
-    "notes/Projects/1_Zomato/1_Zomato.md",
-    "notes/Projects/0_Notepad/image.png",
-    "notes/Projects/0_Notepad/0_Notepad.md",
-    "notes/Projects/1_Zomato",
-    "notes/Projects/0_Notepad",
-    "notes/Projects",
+    "Projects/2_Notification/2_Notification.md",
+    "Projects/2_Notification/image.jpg",
+    "notes/2_Delivery Framework/2_Delivery Framework.md",
+    "Projects/1_Zomato/1_Zomato.md",
+    "Projects/0_Notepad/0_Notepad.md",
+    "Projects/1_Zomato/1_Zomato.canvas",
+    "Projects/0_Notepad/0_Notepad.canvas",
+    "Projects/0_Notepad/image.png",
+    "Projects/2_Notification/2_Notification.canvas",
+    "Untitled.canvas",
+    "Projects/1_Zomato/image.png",
+    "Untitled.md",
+    "README.md",
+    "notes/Projects/2_Notification/2_Notification.md",
+    "notes/Projects/2_Notification/2_Notification_Solution.md",
+    "notes/LLD Projects/1_Zomato/1_Zomato.md",
+    "notes/1_Software Design Principles/1_Software Design Principles.md",
+    "notes/2_Delivery Framework/image.png",
+    "notes/0_OOP Concepts/0_OOP Concepts.md",
+    "notes/5_Singleton Pattern/5_Singleton Pattern.md",
+    "notes/LLD Projects/0_Notepad/0_Notepad.md",
     "notes/LLD Projects/0_Notepad/image.png",
     "notes/LLD Projects/1_Zomato/image.png",
     "notes/3_Strategy Pattern/3_Strategy Pattern.md",
-    "notes/2_Delivery Framework/2_Delivery Framework.md",
     "notes/6_Observer Pattern.md",
-    "notes/6_Observer Pattern",
-    "notes/5_Singleton Pattern/5_Singleton Pattern.md",
-    "notes/5_Singleton Pattern",
     "notes/4_Factory Pattern/4_Factory Pattern.md",
-    "notes/4_Factory Pattern",
-    "notes/1_Software Design Principles/1_Software Design Principles.md",
-    "notes/1_Software Design Principles",
-    "notes/0_OOP Concepts/0_OOP Concepts.md",
     "notes/1_Software Design Principles.md",
     "notes/4_Factory Pattern.md",
     "notes/5_Singleton Pattern.md",
-    "notes/0_OOP Concepts.md",
-    "notes/2_Delivery Framework.md",
-    "notes/3_Strategy Pattern.md",
-    "notes/2_Delivery Framework/image.png",
-    "notes/Strategy Pattern.md",
-    "notes/LLD Projects/1_Zomato.md",
-    "notes/LLD Projects/0_Notepad.md",
     "notes/3_Strategy Pattern/abd67c0e-a449-4e35-a7f2-350f7829b82a.png",
-    "notes/Singleton Pattern.md",
-    "notes/OOP Concepts.md",
-    "notes/Observer Pattern.md",
     "notes/Strategy Pattern/abd67c0e-a449-4e35-a7f2-350f7829b82a.png",
     "notes/LLD Projects/Notepad/image.png",
     "notes/Delivery Framework/image.png"

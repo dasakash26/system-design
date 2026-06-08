@@ -1,6 +1,6 @@
-# Hello Interview LLD Delivery Framework
+# LLD Delivery Framework
 
-The **Hello Interview Low-Level Design (LLD) Delivery Framework** is a structured, step-by-step roadmap to guide you through OOD/LLD interviews. It keeps your thoughts grounded and ensures you cover requirements, entities, APIs, implementation, and verification within the typical 45-minute window.
+This framework provides a structured approach to solving Low Level Design (LLD) and Object Oriented Design (OOD) problems during technical interviews. It ensures a logical transition from a vague initial prompt to a complete, thread safe, and validated class implementation within a typical 45 minute session.
 
 ---
 
@@ -16,7 +16,7 @@ Below is the conceptual diagram illustrating the framework phases:
 
 ```mermaid
 gantt
-    title Typical 45-Minute LLD Interview Timeline
+    title Typical 45 Minute LLD Interview Timeline
     dateFormat  X
     axisFormat %s
     section Phases
@@ -27,61 +27,64 @@ gantt
     5. Verification (~5m)  :active, p5, 35, 40
 ```
 
-### Phase 1: Requirements (~5 minutes)
-Don't jump straight into code! OOD interviews start with a intentionally vague prompt (e.g., *"Design a Parking Lot"*). Spend the first 5 minutes clarifying the scope by asking targeted questions across four dimensions:
+| Phase | Duration | Core Goal | Primary Deliverables |
+| --- | --- | --- | --- |
+| **1. Requirements** | ~5 mins | Clarify scope and establish boundaries | Functional API list, lifecycle states, constraints, In/Out of Scope lists |
+| **2. Entities** | ~3 mins | Map requirements to core structures | Primary data classes, attributes, relationship mapping (Composition/Aggregation) |
+| **3. Class Design** | ~12 mins | Define system schemas and contracts | Class skeletons, interface contracts, method signatures, exception definitions |
+| **4. Implementation** | ~15 mins | Translate templates into clean code | Happy path logic, edge case validation, thread safety locking primitives |
+| **5. Verification** | ~5 mins | Validate implementation correctness | Line by line scenario dry run, requirements checklist match |
 
-1. **Operations (The "What")**: What operations must the system support? (e.g., *"Can users reserve slots in advance, or is it walk-in only?"*)
-2. **State & Transitions**: What is the lifecycle of key objects? (e.g., *"How does a booking transition from PLACED to PAID to COMPLETED?"*)
-3. **Constraints (Errors)**: What should happen when things go wrong? (e.g., *"What happens if the parking lot is full? Do we throw an exception or queue them?"*)
-4. **Scope Boundaries**: Explicitly list what is **In-Scope** vs. **Out-of-Scope**.
-   - *In-Scope*: Core design, data structures, state changes, APIs, concurrency.
-   - *Out-of-Scope*: Web UI, network calls (HTTP/WebSockets), database integrations, microservices.
+### Phase 1: Requirements Gathering (~5 minutes)
+
+Before writing any class definitions, clarify the problem scope. OOD prompts are intentionally open ended. Clarify the system requirements across four distinct pillars:
+
+1. **Core Operations**: What primary capabilities must the system support? (e.g., in a parking lot, check if a slot is available, park a vehicle, generate a ticket).
+2. **State & Transitions**: Define the lifecycles and states of major objects (e.g., an order transition from `PLACED` to `PAID` to `COMPLETED`).
+3. **Error Handling & Constraints**: Define the system behavior when constraints are violated (e.g., how the system reacts when the parking lot is full, or when a payment fails).
+4. **Scope Boundaries**: Explicitly document what is in scope and what is out of scope.
+   - *In Scope*: Class structure, class relationships, core business logic, thread safe collections, API signatures.
+   - *Out of Scope*: Frontend UI, database integration, network calls (HTTP/gRPC), distributed systems scaling.
 
 ---
 
 ### Phase 2: Entities & Relationships (~3 minutes)
-Decompose the requirements into core database models/classes:
-* **Identify Nouns**: Scan your requirements list for key nouns (e.g., `User`, `ParkingLot`, `Vehicle`, `Ticket`).
-* **Define Properties**: Give these nouns essential state attributes.
-* **Determine Relationships**: Decide how they relate:
-  - **Composition (Strict "Has-A")**: Lifespan of child is bound to parent (e.g., `Room` is part of `House`).
-  - **Aggregation (Loose "Has-A")**: Child can exist independently of parent (e.g., `Teacher` and `Department`).
-  - **Inheritance ("Is-A")**: Use sparingly; choose composition over inheritance where behaviors differ.
+
+Map the requirements to core classes and structural models:
+* **Identify Entities**: Extract the primary nouns from the clarified requirements list (e.g., `User`, `ParkingLot`, `Vehicle`, `Ticket`).
+* **Define Properties**: Assign essential attributes to these entities (e.g., `Vehicle` has a license plate and size).
+* **Define Relationships**: Establish how these classes interact:
+  - **Composition**: A strong lifecycle bond where the child cannot exist without the parent (e.g., `Board` belongs to `Game`).
+  - **Aggregation**: A loose reference where the child exists independently of the parent (e.g., `MenuItem` inside a `Cart`).
+  - **Inheritance**: An "is a" relationship, used selectively to define hierarchical categories (e.g., `Car` inheriting from `Vehicle`).
 
 ---
 
-### Phase 3: Class Design & APIs (~10–15 minutes)
-Sketch out the skeleton of your classes, interfaces, and methods.
-* **Define Method Signatures**: Be precise with parameters, return types, and exceptions.
-  - *Bad*: `processPayment(double amount)`
-  - *Good*: `processPayment(PaymentDetails details) throws PaymentFailedException`
-* **Identify Pattern Matches**: Apply design patterns only when code complexity warrants it.
-  - Multiple algorithms? -> **Strategy Pattern**
-  - Dynamic state updates? -> **Observer Pattern**
-  - Complex states/lifecycles? -> **State Pattern**
-  - Object creation decoupled? -> **Factory Method**
+### Phase 3: Class Design & APIs (~12 minutes)
+
+Define the interfaces, classes, and method signatures:
+* **Method Signatures**: Specify input parameters, return types, and explicit exceptions.
+  - *Example*: `void processPayment(PaymentDetails details) throws PaymentFailedException;`
+* **Design Patterns**: Apply structural or behavioral design patterns only when they are needed to keep the code extensible and clean.
+  - Varying behaviors/algorithms -> **Strategy Pattern**
+  - Event-driven state updates -> **Observer Pattern**
+  - Complex lifecycle state changes -> **State Pattern**
+  - Decoupling object creation -> **Factory Method**
 
 ---
 
-### Phase 4: Implementation (~10–15 minutes)
-Write clean, compilable, and highly disciplined code.
-1. **Happy Path First**: Implement the primary logical flow from input to output without getting distracted by edge cases.
-2. **Edge Cases**: Add parameter validation checks, null checks, and error boundaries.
-3. **Concurrency**: LLD interviews assume single-machine executions. You **must** address thread safety (e.g., using `mutex`, `locks`, atomic variables, or thread-safe data structures).
+### Phase 4: Implementation (~15 minutes)
+
+Translate the class skeletons into clean, working code:
+1. **Happy Path**: Write the core logic for the primary success flow first. Do not add premature optimizations or deep nested conditional edge cases in the first pass.
+2. **Edge Cases**: Implement parameter validation, null guards, and exception handling.
+3. **Concurrency Control**: Modern LLD requires handling concurrent access on a single machine. Protect shared resources (such as inventories, seats, and account balances) using synchronization primitives (`mutex`, `locks`, atomic variables, or thread safe collections).
 
 ---
 
-### Phase 5: Verification (~2–5 minutes)
-Verify and test your design to prove it works:
-* **Dry Run**: Trace a concrete user scenario (e.g., *"A customer arrives with a compact car and pays with UPI"*) line-by-line through your classes.
-* **Requirement Checklist**: Cross-check your implementation against the Phase 1 requirements list.
-* **Scalability & Trade-offs**: Discuss how the system would handle extensions without requiring a full redesign (violating the Open-Closed Principle).
+### Phase 5: Verification (~5 minutes)
 
----
-
-## Hello Interview Golden Rules for LLD
-
-1. **Don't Over-engineer (KISS & YAGNI)**: Avoid pre-emptively implementing features or abstract factories. Start simple and add abstractions only when a specific SOLID violation appears.
-2. **Concurrency is a First-Class Citizen**: In real-world LLD, objects are accessed by multiple threads. Always design your core data entities (Carts, Seats, Inventories) to be thread-safe.
-3. **Favor Composition Over Inheritance**: Inheritance creates brittle hierarchies. If behavior varies, encapsulate it in an interface and compose it.
-4. **Stop Memorizing, Start Pattern Matching**: Don't try to force GoF patterns into every design. Instead, match patterns to actual requirements (e.g., Strategy pattern for payment processing, Command pattern for undo/redo actions).
+Validate the completed design:
+* **Dry Run**: Trace a concrete execution path (e.g., *"User parks a large SUV in Spot #12 and pays via credit card"*) line by line through the classes.
+* **Requirements Review**: Verify that every in scope requirement identified in Phase 1 is covered by the code.
+* **Extensibility Analysis**: Explain how the design handles future requirements (e.g., adding a new vehicle type) without modifying existing codebase core logic (Open/Closed Principle).
