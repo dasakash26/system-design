@@ -8,7 +8,7 @@ This framework provides a structured approach to solving Low Level Design (LLD) 
 
 Below is the conceptual diagram illustrating the framework phases:
 
-![image.png](image.png)
+![image.png](notes/2_Delivery%20Framework/image.png)
 
 ---
 

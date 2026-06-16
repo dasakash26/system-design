@@ -6,9 +6,14 @@ The Adapter pattern is a structural design pattern that allows objects with inco
 
 ## Core Architecture
 
-The Adapter pattern can be implemented using two different approaches:
-* **Object Adapter (Composition)**: The adapter implements the target interface and aggregates a reference to the adaptee. This is the preferred approach as it favors composition over inheritance.
-* **Class Adapter (Multiple Inheritance)**: The adapter inherits from both the target interface and the adaptee class. This approach is rigid and tightly couples the adapter to the concrete adaptee.
+The Adapter pattern can be implemented using two structurally distinct approaches:
+
+| Approach | Mechanism | Coupling | Preferred |
+| --- | --- | --- | --- |
+| **Object Adapter (Composition)** | Adapter implements the target interface and aggregates a reference to the adaptee | Loose: adapts any adaptee subclass | Yes — favors composition |
+| **Class Adapter (Multiple Inheritance)** | Adapter inherits from both the target interface and the adaptee class | Tight: locked to one concrete adaptee | Only when adaptee override is required |
+
+> **Scope**: This note demonstrates the **Object Adapter** in depth. Class Adapter is omitted because C++ multiple inheritance adds significant complexity (vtable layout, diamond problem) that obscures the pattern intent.
 
 | Participant | Responsibility                                                                               |
 | ----------- | -------------------------------------------------------------------------------------------- |
@@ -19,7 +24,7 @@ The Adapter pattern can be implemented using two different approaches:
 
 ---
 
-## UML Representation
+## Standard UML Representation
 
 Below is the structure of the **Object Adapter** pattern:
 
@@ -38,8 +43,8 @@ classDiagram
         +request()
     }
 
-    Adapter ..|> Target : realizes
-    Adapter --> Adaptee : delegates to
+    Target <|.. Adapter : realizes
+    Adaptee <-- Adapter : delegates to
 ```
 
 ---
@@ -52,7 +57,29 @@ classDiagram
 
 ---
 
-## C++ Implementation (XML to JSON Reports Converter)
+## Example (XML to JSON Reports Converter)
+
+Below is the UML class diagram for the XML to JSON Reports Converter scenario:
+
+```mermaid
+classDiagram
+    direction TB
+    class IReports {
+        <<interface>>
+        +getJsonData(rawInput string) string
+    }
+    class XmlDataProvider {
+        +getXmlData(rawInput string) string
+    }
+    class XmlDataProviderAdapter {
+        -xmlProvider shared_ptr~XmlDataProvider~
+        -adapterMutex mutex
+        +getJsonData(rawInput string) string
+    }
+
+    IReports <|.. XmlDataProviderAdapter : realizes
+    XmlDataProvider <-- XmlDataProviderAdapter : delegates / adapts
+```
 
 This implementation demonstrates an Object Adapter that converts XML report data to JSON format, conforming to the application's unified reporting interface.
 
@@ -166,10 +193,7 @@ int main() {
 
 ## Design Tradeoffs
 
-### Advantages & SOLID Alignment
-* **OCP Compliance**: Introduce new adapter configurations without altering existing client code.
-* **SRP Alignment**: Separates client execution logic from complex data conversion logic.
-
-### Drawbacks
-* **Indirection Cost**: Adds wrapping overhead and increases call stack depth.
-* **Code Bloat**: Requires creating new translation helper classes for minor API updates.
+| Advantages & SOLID Alignment | Drawbacks & Limitations |
+| --- | --- |
+| **OCP Compliance**: Introduce new adapter configurations without altering existing client code. | **Indirection Cost**: Adds wrapping overhead and increases call stack depth. |
+| **SRP Alignment**: Separates client execution logic from complex data conversion logic. | **Code Bloat**: Requires creating new translation helper classes for minor API updates. |

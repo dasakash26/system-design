@@ -8,15 +8,15 @@ The Strategy pattern is a behavioral design pattern that defines a family of alg
 
 The static class hierarchy decouples algorithm execution from the context that utilizes it. The context class contains a reference to the Strategy interface and delegates the algorithm execution to the concrete strategy object.
 
-| Participant | Responsibility |
-| --- | --- |
-| **Context** | Maintains a reference to a Strategy object and interfaces with the client. |
-| **Strategy** | Declares a common interface for all supported algorithms. |
-| **ConcreteStrategy** | Implements the specific algorithm defined by the Strategy interface. |
+| Participant          | Responsibility                                                             |
+| -------------------- | -------------------------------------------------------------------------- |
+| **Context**          | Maintains a reference to a Strategy object and interfaces with the client. |
+| **Strategy**         | Declares a common interface for all supported algorithms.                  |
+| **ConcreteStrategy** | Implements the specific algorithm defined by the Strategy interface.       |
 
 ---
 
-## UML Representation
+## Standard UML Representation
 
 ```mermaid
 classDiagram
@@ -37,22 +37,65 @@ classDiagram
         +performOperation()
     }
 
-    ConcreteStrategyA ..|> Strategy : realizes
-    ConcreteStrategyB ..|> Strategy : realizes
-    Context o-- Strategy : aggregates
+    Strategy <|.. ConcreteStrategyA : realizes
+    Strategy <|.. ConcreteStrategyB : realizes
+    Strategy --o Context : aggregates
 ```
 
 ---
 
 ## The Coupling Problem
 
-* **Problem**: A checkout manager that directly calls payment methods like `processUpiPayment()` or `processCardPayment()` is tightly coupled to concrete execution algorithms.
-* **Impact**: Adding a new payment type or changing a provider's API signatures requires modifying the checkout manager, violating the **Open/Closed Principle (OCP)**.
-* **Solution**: The checkout processor depends exclusively on a common `Strategy` interface, allowing algorithms to be swapped at runtime or injected via constructor parameters.
+Without Strategy, the natural approach is to encode each algorithm variant directly inside the context class using conditional branching, or to use inheritance to specialize behavior:
+
+```cpp
+// Inheritance approach: one subclass per payment variant
+class CheckoutProcessor { public: virtual void pay(double) = 0; };
+class CardCheckoutProcessor  : public CheckoutProcessor { ... };
+class UpiCheckoutProcessor   : public CheckoutProcessor { ... };
+class CryptoCheckoutProcessor: public CheckoutProcessor { ... }; // new variant = new class
+```
+
+This creates a rigid subclass hierarchy. Adding a new payment method means adding a new subclass of `CheckoutProcessor` — the hierarchy grows linearly with variants. Combining variants (e.g. a checkout that tries UPI first, falls back to card) requires yet another subclass or branching. Runtime switching between algorithms is impossible without changing the object's type entirely.
+
+The Strategy pattern inverts this: instead of the context *being* an algorithm variant, it *holds* one. The algorithm is extracted into its own interface, making it independently replaceable at runtime without subclassing the context.
 
 ---
 
-## C++ Implementation (Payment Processing System)
+## Example (Payment Processing System)
+
+Below is the UML class diagram for the Payment Processing System scenario:
+
+```mermaid
+classDiagram
+    direction TB
+    class PaymentStrategy {
+        <<interface>>
+        +collectDetails() void
+        +pay(amount double) void
+    }
+    class CardPayment {
+        -cardNumber string
+        -cvv string
+        +collectDetails() void
+        +pay(amount double) void
+    }
+    class UpiPayment {
+        -upiId string
+        +collectDetails() void
+        +pay(amount double) void
+    }
+    class CheckoutProcessor {
+        -paymentStrategy shared_ptr~PaymentStrategy~
+        -strategyMutex mutex
+        +setPaymentStrategy(strategy shared_ptr~PaymentStrategy~) void
+        +processOrder(amount double) void
+    }
+
+    PaymentStrategy <|.. CardPayment : realizes
+    PaymentStrategy <|.. UpiPayment : realizes
+    PaymentStrategy --o CheckoutProcessor : delegates to
+```
 
 This implementation demonstrates a thread safe checkout context executing dynamic payment strategies, featuring smart memory management, custom exceptions, and scoped locking.
 
@@ -190,10 +233,7 @@ int main() {
 
 ## Design Tradeoffs
 
-### Advantages & SOLID Alignment
-* **OCP Compliance**: You can introduce new payment methods (e.g. `CryptoPayment`) without modifying existing checkout code.
-* **SRP Alignment**: Separates checkout orchestration logic from concrete integration details.
-
-### Drawbacks
-* **Subclass Proliferation**: Each algorithm requires a new class, increasing the codebase class count.
-* **Client Awareness**: The calling client must understand the differences between strategies to instantiate and inject the correct one.
+| Advantages & SOLID Alignment | Drawbacks & Limitations |
+| --- | --- |
+| **OCP Compliance**: You can introduce new payment methods (e.g. `CryptoPayment`) without modifying existing checkout code. | **Subclass Proliferation**: Each algorithm requires a new class, increasing the codebase class count. |
+| **SRP Alignment**: Separates checkout orchestration logic from concrete integration details. | **Client Awareness**: The calling client must understand the differences between strategies to instantiate and inject the correct one. |

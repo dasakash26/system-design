@@ -39,7 +39,152 @@ This case study covers the low level design of a food ordering and delivery syst
 
 Below is the UML class diagram matching the course structure:
 
-![Zomato Diagram](image.png)
+![Zomato Diagram](projects/1_Zomato/image.png)
+
+```mermaid
+classDiagram
+    direction TB
+    class MenuItem {
+        -code string
+        -name string
+        -price int
+        +getCode() string
+        +getName() string
+        +getPrice() int
+    }
+    class Restaurant {
+        -restaurantId int
+        -name string
+        -location string
+        -menu vector~MenuItem~
+        +getName() string
+        +getLocation() string
+        +addMenuItem(item MenuItem) void
+        +getMenu() vector~MenuItem~
+    }
+    class Cart {
+        -restaurant Restaurant*
+        -items vector~MenuItem~
+        -cartLock mutex
+        +setRestaurant(r Restaurant*) void
+        +getRestaurant() Restaurant*
+        +addItem(item MenuItem) void
+        +getTotalCost() double
+        +isEmpty() bool
+        +clear() void
+        +getItems() vector~MenuItem~
+    }
+    class User {
+        -id int
+        -name string
+        -address string
+        -cart Cart
+        +getName() string
+        +getAddress() string
+        +getCart() Cart*
+    }
+    class PaymentStrategy {
+        <<interface>>
+        +pay(amount double) void
+    }
+    class UpiPaymentStrategy {
+        -mobile string
+        +pay(amount double) void
+    }
+    class Order {
+        <<abstract>>
+        #orderId int
+        #user User*
+        #restaurant Restaurant*
+        #items vector~MenuItem~
+        #paymentStrategy PaymentStrategy*
+        #total double
+        #scheduled string
+        +processPayment() bool
+        +getType() string*
+        +getOrderId() int
+        +setUser(u User*) void
+        +setRestaurant(r Restaurant*) void
+        +setItems(its vector~MenuItem~) void
+        +setPaymentStrategy(p PaymentStrategy*) void
+        +setScheduled(s string) void
+        +getTotal() double
+    }
+    class DeliveryOrder {
+        -userAddress string
+        +getType() string
+        +setUserAddress(addr string) void
+        +getUserAddress() string
+    }
+    class PickupOrder {
+        -restaurantAddress string
+        +getType() string
+        +setRestaurantAddress(addr string) void
+        +getRestaurantAddress() string
+    }
+    class OrderFactory {
+        <<interface>>
+        +createOrder(user User*, cart Cart*, restaurant Restaurant*, menuItems vector~MenuItem~, paymentStrategy PaymentStrategy*, totalCost double, orderType string) Order*
+    }
+    class NowOrderFactory {
+        +createOrder(user User*, cart Cart*, restaurant Restaurant*, menuItems vector~MenuItem~, paymentStrategy PaymentStrategy*, totalCost double, orderType string) Order*
+    }
+    class ScheduledOrderFactory {
+        -scheduleTime string
+        +createOrder(user User*, cart Cart*, restaurant Restaurant*, menuItems vector~MenuItem~, paymentStrategy PaymentStrategy*, totalCost double, orderType string) Order*
+    }
+    class RestaurantManager {
+        -restaurants vector~Restaurant*~
+        -instance RestaurantManager*$
+        -instanceMutex mutex$
+        -managerMutex mutex
+        +getInstance() RestaurantManager*$
+        +addRestaurant(r Restaurant*) void
+        +searchByLocation(loc string) vector~Restaurant*~
+    }
+    class OrderManager {
+        -orders vector~Order*~
+        -instance OrderManager*$
+        -instanceMutex mutex$
+        -managerMutex mutex
+        +getInstance() OrderManager*$
+        +addOrder(order Order*) void
+        +listOrders() void
+    }
+    class NotificationService {
+        +notify(order Order*) void$
+    }
+    class TomatoApp {
+        +initializeRestaurants() void
+        +searchRestaurants(location string) vector~Restaurant*~
+        +selectRestaurant(user User*, restaurant Restaurant*) void
+        +addToCart(user User*, itemCode string) void
+        +checkoutNow(user User*, orderType string, paymentStrategy PaymentStrategy*) Order*
+        +checkoutScheduled(user User*, orderType string, paymentStrategy PaymentStrategy*, scheduleTime string) Order*
+        +checkout(user User*, orderType string, paymentStrategy PaymentStrategy*, orderFactory OrderFactory*) Order*
+        +payForOrder(user User*, order Order*) void
+        +printUserCart(user User*) void
+    }
+
+    Restaurant o-- MenuItem : aggregates
+    Cart --> Restaurant : aggregates
+    Cart o-- MenuItem : aggregates
+    User *-- Cart : composes
+    UpiPaymentStrategy ..|> PaymentStrategy : realizes
+    Order o-- PaymentStrategy : delegates to
+    Order o-- MenuItem : aggregates
+    Order --> Restaurant : aggregates
+    Order --> User : aggregates
+    DeliveryOrder --|> Order : inherits
+    PickupOrder --|> Order : inherits
+    NowOrderFactory ..|> OrderFactory : realizes
+    ScheduledOrderFactory ..|> OrderFactory : realizes
+    NowOrderFactory ..> Order : instantiates
+    ScheduledOrderFactory ..> Order : instantiates
+    TomatoApp --> RestaurantManager : uses
+    TomatoApp --> OrderManager : uses
+    TomatoApp --> OrderFactory : uses
+```
 
 ---
 
@@ -581,6 +726,33 @@ int main() {
 
 ---
 
+## Code Analysis
+
+The `TomatoApp` system relies on a structural facade and several design patterns to achieve clean, decoupled, and thread safe orchestration:
+
+### 1. The Facade Pattern (System Orchestration)
+The client interacts solely with the facade orchestrator (`TomatoApp`), which coordinates user registrations, restaurant lookup, cart modifications, order processing, and payment notifications. The facade encapsulates subsystems like:
+*   `RestaurantManager` (searching and cataloging).
+*   `OrderManager` (tracking historical operations).
+*   `Cart` (updating selections).
+*   `OrderFactory` (dispatching and scheduling logic).
+
+### 2. The Factory Method Pattern (Extensible Creation)
+Creating different kinds of orders (e.g. standard immediate delivery vs. delayed pickup) requires distinct object setup routines:
+*   **Abstract Creator (`OrderFactory`)**: Declares the `createOrder()` method interface.
+*   **Concrete Creators (`NowOrderFactory`, `ScheduledOrderFactory`)**: Implement custom instantiation algorithms, setting the delivery address details or timing stamps (`TimeUtils::getCurrentTime()`) correctly depending on checkout types.
+
+### 3. The Strategy Pattern (Dynamic Transaction Gateways)
+Rather than hardcoding payment systems within checkout managers:
+*   **Strategy Interface (`PaymentStrategy`)**: Standardizes the transaction interface with `pay(double amount)`.
+*   **Concrete Strategies (`UpiPaymentStrategy`, etc.)**: Implement custom processing gateways.
+*   **Context (`Order`)**: Contains a reference to a `PaymentStrategy*` object and executes payments dynamically during checkout, complying with OCP.
+
+### 4. The Singleton Pattern (Central Managers)
+The registry managers (`RestaurantManager` and `OrderManager`) coordinate shared global data. They are implemented with thread safe Double Checked Locking, ensuring a single instances exists in memory.
+
+---
+
 ## Concurrency & Synchronization
 
 To adapt the system for multi-threaded environments, synchronization locks are integrated:
@@ -592,10 +764,7 @@ To adapt the system for multi-threaded environments, synchronization locks are i
 
 ## SOLID Trade-offs
 
-### SOLID Principles Satisfied
-*   **Open/Closed Principle (OCP)**: Adding new delivery types (e.g. `DroneDeliveryOrder`) or scheduling rules can be integrated by extending the `Order` base class and writing a corresponding factory without altering `TomatoApp`.
-*   **Dependency Inversion Principle (DIP)**: `TomatoApp` is decoupled from specific order instantiations by depending on the `OrderFactory` and `Order` abstractions.
-
-### Design Drawbacks & Tradeoffs
-*   **Fat Interface Smells**: The facade `TomatoApp` aggregates a large number of orchestrating methods, which can make it a focal point of complexity.
-*   **Overkill for Simple Flows**: Introducing the Factory Method pattern for creating standard orders adds structural indirection that is unnecessary if the delivery model is fixed.
+| SOLID Principles Satisfied | Design Drawbacks & Tradeoffs |
+| --- | --- |
+| **Open/Closed Principle (OCP)**: Adding new delivery types (e.g. `DroneDeliveryOrder`) or scheduling rules can be integrated by extending the `Order` base class and writing a corresponding factory without altering `TomatoApp`. | **Fat Interface Smells**: The facade `TomatoApp` aggregates a large number of orchestrating methods, which can make it a focal point of complexity. |
+| **Dependency Inversion Principle (DIP)**: `TomatoApp` is decoupled from specific order instantiations by depending on the `OrderFactory` and `Order` abstractions. | **Overkill for Simple Flows**: Introducing the Factory Method pattern for creating standard orders adds structural indirection that is unnecessary if the delivery model is fixed. |

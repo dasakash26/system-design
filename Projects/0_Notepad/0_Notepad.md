@@ -36,7 +36,71 @@ This case study covers the low level design of a document editor (Notepad), focu
 
 Below is the UML class diagram matching the course structure:
 
-![Notepad Diagram](image.png)
+![Notepad Diagram](projects/0_Notepad/image.png)
+
+```mermaid
+classDiagram
+    direction TB
+    class DocumentElement {
+        <<interface>>
+        +render() string
+    }
+    class TextElement {
+        -text string
+        +TextElement(txt string)
+        +render() string
+    }
+    class ImageElement {
+        -imagePath string
+        +ImageElement(path string)
+        +render() string
+    }
+    class NewLineElement {
+        +render() string
+    }
+    class TabSpaceElement {
+        +render() string
+    }
+    class Document {
+        -documentElements vector~DocumentElement*~
+        -rwLock shared_mutex
+        +addElement(element DocumentElement*) void
+        +render() string
+    }
+    class Persistence {
+        <<interface>>
+        +save(data string) void
+    }
+    class FileStorage {
+        +save(data string) void
+    }
+    class DBStorage {
+        +save(data string) void
+    }
+    class DocumentEditor {
+        -document Document*
+        -storage Persistence*
+        -renderedDocument string
+        -editorMutex mutex
+        +DocumentEditor(doc Document*, store Persistence*)
+        +addText(text string) void
+        +addImage(imagePath string) void
+        +addNewLine() void
+        +addTabSpace() void
+        +renderDocument() string
+        +saveDocument() void
+    }
+
+    TextElement ..|> DocumentElement : realizes
+    ImageElement ..|> DocumentElement : realizes
+    NewLineElement ..|> DocumentElement : realizes
+    TabSpaceElement ..|> DocumentElement : realizes
+    Document o-- DocumentElement : aggregates
+    FileStorage ..|> Persistence : realizes
+    DBStorage ..|> Persistence : realizes
+    DocumentEditor --> Document : orchestrates
+    DocumentEditor --> Persistence : orchestrates
+```
 
 ---
 
@@ -245,6 +309,27 @@ int main() {
 
 ---
 
+## Code Analysis
+
+The `Notepad` document editor is designed as a modular, extensible, and thread safe system. The architecture relies on several fundamental structural and behavioral patterns:
+
+### 1. The Composite Pattern (Structural Document Representation)
+The system represents a document as a collection of diverse formatting and content nodes:
+*   **Component (`DocumentElement`)**: Exposes a unified interface `render()` returning `std::string`.
+*   **Leaf Nodes (`TextElement`, `ImageElement`, `NewLineElement`, `TabSpaceElement`)**: Implement specific rendering behaviors. For instance, `TextElement` returns raw text, while `ImageElement` wraps paths in formatting strings.
+*   **Aggregate Root (`Document`)**: Maintains a vector of child `DocumentElement*` objects. It is the composite container that handles polymorphic layout traversal through its `render()` function, iterating over child elements without needing to know their concrete classes.
+
+### 2. The Strategy Pattern (Extensible Storage Backends)
+To support saving document contents across different targets, we decouple the serialization mechanism:
+*   **Strategy Interface (`Persistence`)**: Declares the `save(std::string data)` virtual contract.
+*   **Concrete Strategies (`FileStorage`, `DBStorage`)**: Implement custom persistence rules (such as writing to local files using `std::ofstream` or logging SQL database statements).
+*   **Context (`DocumentEditor`)**: References a `Persistence` pointer, delegating serialization dynamically. This allows the backend storage to be swapped at runtime or injected during initialization.
+
+### 3. The Facade Pattern (System Coordination)
+`DocumentEditor` acts as a unified facade for the client. It aggregates the `Document` model and the `Persistence` strategy, offering a single entry point for operations like adding text, inserting formatting, caching the rendered view, and triggering saves. This shields the caller from low level details of composition and strategy orchestration.
+
+---
+
 ## Concurrency & Synchronization
 
 1.  **Read Write Lock (High Reader Throughput)**: 
@@ -258,10 +343,7 @@ int main() {
 
 ## SOLID Trade-offs
 
-### SOLID Principles Satisfied
-*   **Open/Closed Principle (OCP)**: New layout formatting nodes (e.g. `UnderlineElement`) can be added without altering the `Document` collection class. Similarly, new storage targets (e.g. `CloudStorage`) can be plugged in without changing the core `DocumentEditor`.
-*   **Single Responsibility Principle (SRP)**: The representation of elements (Composite) is decoupled from the storage of document data (Strategy).
-
-### Design Drawbacks & Tradeoffs
-*   **Fine Grained Allocations**: In a large document, creating a separate object heap allocation for every character or tab space leads to high memory overhead and fragmentation.
-*   **No Structural Undo/Redo**: This design focuses purely on composite rendering. Without an action history stack (Command pattern), rolling back incremental modifications is not supported.
+| SOLID Principles Satisfied | Design Drawbacks & Tradeoffs |
+| --- | --- |
+| **Open/Closed Principle (OCP)**: New layout formatting nodes (e.g. `UnderlineElement`) can be added without altering the `Document` collection class. Similarly, new storage targets (e.g. `CloudStorage`) can be plugged in without changing the core `DocumentEditor`. | **Fine Grained Allocations**: In a large document, creating a separate object heap allocation for every character or tab space leads to high memory overhead and fragmentation. |
+| **Single Responsibility Principle (SRP)**: The representation of elements (Composite) is decoupled from the storage of document data (Strategy). | **No Structural Undo/Redo**: This design focuses purely on composite rendering. Without an action history stack (Command pattern), rolling back incremental modifications is not supported. |

@@ -16,66 +16,82 @@ The Facade pattern acts as an entry point to a subsystem. It delegates client re
 
 ---
 
-## UML Representation
+## Standard UML Representation
 
 ```mermaid
 classDiagram
     direction TB
     class Client {
     }
-    class MusicPlayerFacade {
-        -audioEngine AudioEngine
-        -deviceManager DeviceManager
-        -playlistManager PlaylistManager
-        +playPlaylist(name string)
-        +connectDevice(device string)
+    class Facade {
+        -subsystemA SubsystemClassA
+        -subsystemB SubsystemClassB
+        +unifiedOperation() void
     }
-    class AudioEngine {
-        +initialize()
-        +play(track string)
+    class SubsystemClassA {
+        +operationA() void
     }
-    class DeviceManager {
-        +selectOutput(device string)
-    }
-    class PlaylistManager {
-        +getPlaylistTracks(name string) List
+    class SubsystemClassB {
+        +operationB() void
     }
 
-    Client --> MusicPlayerFacade : invokes
-    MusicPlayerFacade --> AudioEngine : delegates
-    MusicPlayerFacade --> DeviceManager : delegates
-    MusicPlayerFacade --> PlaylistManager : delegates
+    Client --> Facade : invokes
+    Facade --> SubsystemClassA : delegates
+    Facade --> SubsystemClassB : delegates
 ```
 
 ---
 
 ## The Subsystem Complexity Problem
 
-Integrating complex subsystems (such as audio engines, hardware device managers, and media playlist managers) forces client code to acquire deep transitive knowledge of multiple distinct interfaces. When the client must coordinate these low level dependencies directly, any internal modifications to method signatures or initialization procedures propagate throughout the entire codebase, leading to fragile integrations.
+Integrating complex subsystems (such as audio engines, device managers, and playlist controllers) forces client code to acquire deep transitive knowledge of multiple distinct interfaces. When clients coordinate these dependencies directly, method signature modifications or layout changes propagate throughout the client codebase, violating the **Principle of Least Knowledge (Law of Demeter)**.
 
-### Principle of Least Knowledge (Law of Demeter)
+The Law of Demeter dictates that objects should only interact with immediate neighbors, avoiding nested traversals (like `client->getPlaylistManager()->getTracks(...)`). 
 
-The Principle of Least Knowledge (also known as the Law of Demeter) provides a strict constraint for minimizing coupling. It dictates that a method `M` of an object `O` should only invoke methods of:
-1. `O` itself.
-2. The parameters passed into `M`.
-3. Any object instantiated or created within `M`.
-4. The direct member components of `O`.
+The Facade serves as the client's sole immediate neighbor, enforcing this boundary by translating and orchestrating the underlying subsystem calls.
 
-It explicitly forbids traversing nested object graphs (e.g., `object.getComponent().getSubComponent().execute()`), which is commonly described as "talking to strangers". 
-
-The Facade design pattern serves as the structural mechanism to enforce the Law of Demeter. By consolidating interactions with multiple subsystem dependencies behind a single interface, it acts as the client's sole immediate neighbor. The client remains completely oblivious to the subsystem's internal topology, object lifetimes, and coordination logic.
-
-| Design Attribute | Subsystem Direct Interaction (Violates Law of Demeter) | Facade Mediated Interaction (Conforms to Law of Demeter) |
+| Dimension | Subsystem Direct Interaction | Facade Mediated Interaction |
 | --- | --- | --- |
-| **Direct Collaborators** | High; client couples to multiple transient interfaces (`AudioEngine`, `DeviceManager`, etc.). | Low; client couples exclusively to a single `MusicPlayerFacade` object. |
-| **Object Traversal** | Deep graph navigation (e.g., `client->getPlaylistManager()->getTracks(...)`). | Zero traversal; client calls high level methods directly on the Facade. |
-| **Header Dependency & Compilation** | High header pollution; client must `#include` all subsystem headers, leading to compilation cascades. | Low header pollution; client only `#include`s the Facade header. Subsystem headers are hidden in the implementation file. |
-| **Pointer Chasing & Cache Locality** | Deep pointer dereferencing across disjoint heap locations degrades L1/L2 cache locality. | Localized pointer dereferencing within the Facade context, optimizing memory cache patterns. |
-| **Testability & Mocking** | High mocking complexity; tests must construct stubbed object graphs of all transitive dependencies. | Low mocking complexity; mock interface is restricted to a single class API. |
+| **Collaborators** | High; client couples to all subsystem types. | Low; client couples only to the Facade interface. |
+| **Compilation** | High header pollution; triggers recompilation cascades. | Low header pollution; subsystem headers are hidden in implementation files. |
+| **Testability** | High; requires stubbing transitive dependency graphs. | Low; mock boundary is restricted to the single Facade API. |
+
 
 ---
 
-## C++ Implementation (Music Player System Facade)
+## Example (Music Player System Facade)
+
+Below is the UML class diagram for the Music Player System Facade scenario:
+
+```mermaid
+classDiagram
+    direction TB
+    class MusicPlayerFacade {
+        -audioEngine shared_ptr~AudioEngine~
+        -deviceManager shared_ptr~DeviceManager~
+        -playlistManager shared_ptr~PlaylistManager~
+        -playerMutex mutex
+        +connectAudioDevice(deviceType string) void
+        +playPlaylist(playlistName string) void
+        +stopPlayback() void
+    }
+    class AudioEngine {
+        +play(track string) void
+        +stop() void
+    }
+    class DeviceManager {
+        -activeDevice string
+        +connectDevice(deviceType string) void
+        +getActiveDevice() string
+    }
+    class PlaylistManager {
+        +getTracks(playlistName string) vector~string~
+    }
+
+    MusicPlayerFacade --> AudioEngine : orchestrates
+    MusicPlayerFacade --> DeviceManager : orchestrates
+    MusicPlayerFacade --> PlaylistManager : orchestrates
+```
 
 This C++ implementation demonstrates a simplified `MusicPlayerFacade` that orchestrates a set of audio, device, and playlist subsystem classes.
 
@@ -213,9 +229,8 @@ int main() {
 
 ## Design Tradeoffs
 
-### Advantages
-* **Decoupling**: Shields clients from complex internal changes to subsystem APIs.
-* **Fallback Escape**: Advanced users can bypass the Facade and call subsystem methods directly if custom workflows are needed.
-
-### Drawbacks
-* **God Object Danger**: Facades can grow into monolithic classes that handle too much execution logic.
+| Advantages                                                                                                                                                       | Drawbacks & Limitations                                                                                                                                                                                                                                    |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Decoupling**: Shields clients from complex internal changes to subsystem APIs.                                                                                 | **God Object Danger**: Facades can grow into monolithic classes that handle too much execution logic.                                                                                                                                                      |
+| **Fallback Escape**: Advanced users can bypass the Facade and call subsystem methods directly if custom workflows are needed.                                    | **OCP Violation at the Facade**: Adding a new subsystem operation requires modifying the Facade class itself. The Facade is open to extension only if the subsystem provides what it needs, new capabilities not present in subsystems force Facade edits. |
+| **Compilation Firewall**: Hiding subsystem headers behind the Facade implementation file prevents client recompilation cascades when subsystem internals change. | **Single Point of Failure**: All client interactions funnel through the Facade. A bug or performance bottleneck in the Facade affects every caller, whereas direct subsystem access would isolate the impact.                                              |

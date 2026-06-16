@@ -15,7 +15,7 @@ The static structure locks down instantiation. The constructor and assignment op
 
 ---
 
-## UML Representation
+## Standard UML Representation
 
 ```mermaid
 classDiagram
@@ -26,19 +26,44 @@ classDiagram
         +getInstance() Singleton$
         +executeOperation()
     }
+    class Client {
+    }
+
+    Client --> Singleton : getInstance()
 ```
 
 ---
 
-## The Coupling Problem
+## The Uncontrolled Instantiation Problem
 
-* **Problem**: Hardcoding class accessor calls like `DatabaseConnectionPool::getInstance().query()` binds consumers directly to concrete classes.
-* **Impact**: Unit testing becomes difficult since the database layer cannot be mocked. Global state leaks across test suites, causing flaky results and test ordering dependencies.
-* **Solution**: Rely on Dependency Injection (DI) to pass the single instance into constructors, keeping callers decoupled and mockable.
+Without a controlled access mechanism, nothing prevents client code from calling `new DatabasePool()` multiple times, producing duplicate connection pools that exhaust file descriptors, corrupt shared state, and consume redundant memory. The problem is not that instantiation is *impossible* — it is that it is *unrestricted*.
+
+The Singleton pattern makes the constructor private and routes all access through a single static method, converting instantiation from an open door into a controlled gate. The tradeoff: this global access point creates hidden coupling between callers and the concrete class, making unit testing difficult. The practical mitigation is Dependency Injection — passing the single instance as a constructor argument rather than calling `getInstance()` deep inside business logic.
 
 ---
 
-## C++ Implementation (Database Connection Pool)
+## Example (Database Connection Pool)
+
+Below is the UML class diagram for the Database Connection Pool scenario:
+
+```mermaid
+classDiagram
+    direction TB
+    class MeyersDatabasePool {
+        -activeConnections int
+        -MeyersDatabasePool()
+        +getInstance() MeyersDatabasePool$
+        +executeQuery(query string) void
+    }
+    class DoubleCheckedDatabasePool {
+        -instance atomic~DoubleCheckedDatabasePool*~$
+        -lockMutex mutex$
+        -activeConnections int
+        -DoubleCheckedDatabasePool()
+        +getInstance() DoubleCheckedDatabasePool*$
+        +executeQuery(query string) void
+    }
+```
 
 This implementation demonstrates a thread safe Database Connection Pool. It provides both Meyers' Singleton (modern C++ default) and a Double Checked Locking implementation with explicit acquire/release memory barriers for pre-C++11 compatibility or low level memory control.
 
@@ -73,7 +98,11 @@ public:
     MeyersDatabasePool& operator=(const MeyersDatabasePool&) = delete;
 
     static MeyersDatabasePool& getInstance() {
-        // Guarded by compiler-generated thread safe initialization (C++11 onward)
+        // C++11 §6.7: static local variable initialization is guaranteed to occur exactly once.
+        // The compiler emits a hidden guard variable (e.g. __cxa_guard_acquire / __cxa_guard_release
+        // on GCC/Clang, or _Init_thread_header on MSVC). The first thread to enter acquires the
+        // guard, initializes the object, then releases it. Subsequent threads spin or block on the
+        // guard until initialization is complete, then proceed. No explicit mutex is needed.
         static MeyersDatabasePool instance;
         return instance;
     }
@@ -151,14 +180,8 @@ To prevent dynamic instantiations from crashing under concurrent conditions, we 
 
 ## Design Tradeoffs
 
-### Advantages
-* **Unified Control**: Guarantees a single instance, preventing duplicate connections and resource conflicts.
-* **Lazy Loading**: Delays allocation overhead until the object is actually requested by the client.
-
-### Drawbacks & SOLID Violations
-
-| Area | Impact | Mitigation |
+| Advantages | Drawbacks & SOLID Violations | Mitigation |
 | --- | --- | --- |
-| **SRP Violation** | Class manages both its core logic and its own lifecycle. | Decouple lifetime orchestration to a Dependency Injection container. |
-| **State Pollution** | Hidden global state makes APIs misleading and leaks data between tests. | Inject the shared instance as a constructor dependency. |
-| **Mocking Limits** | Concrete static accessors cannot be substituted with mock objects. | Have the singleton implement an interface and pass an interface reference. |
+| **Unified Control**: Guarantees a single instance, preventing duplicate connections and resource conflicts. | **SRP Violation**: Class manages both its core logic and its own lifecycle. | Decouple lifetime orchestration to a Dependency Injection container. |
+| **Lazy Loading**: Delays allocation overhead until the object is actually requested by the client. | **State Pollution**: Hidden global state makes APIs misleading and leaks data between tests. | Inject the shared instance as a constructor dependency. |
+| | **Mocking Limits**: Concrete static accessors cannot be substituted with mock objects. | Have the singleton implement an interface and pass an interface reference. |

@@ -17,7 +17,7 @@ The static structure decouples state monitoring from state modification. The sub
 
 ---
 
-## UML Representation
+## Standard UML Representation
 
 ```mermaid
 classDiagram
@@ -47,8 +47,8 @@ classDiagram
         +update()
     }
 
-    ConcreteSubject ..|> ISubject : realizes
-    ConcreteObserver ..|> IObserver : realizes
+    ISubject <|.. ConcreteSubject : realizes
+    IObserver <|.. ConcreteObserver : realizes
     ISubject --> IObserver : notifies
     ConcreteObserver --> ConcreteSubject : observes / pulls state
 ```
@@ -68,9 +68,37 @@ State updates can be propagated from the Subject to Observers in two ways:
 | **Push Model** | Subject passes data arguments: `update(State data)`. | Loosely coupled on domain instances, but a change in the data structure breaks the update signature. | High. Pushes all state to all observers, regardless of whether they need it. |
 | **Pull Model** | Subject triggers simple callback: `update()`. | Tighter coupling. Observers must hold a reference to the Concrete Subject to query getters. | Low. Observers query and pull only the specific fields they require. |
 
+The example below uses the **Push model** — `Channel` calls `update(title)` passing the video title directly. This fits YouTube's notification model: every subscriber needs the same piece of data (the title), so pushing it avoids redundant getter calls into the subject.
+
 ---
 
-## C++ Implementation (YouTube Channel Notifications)
+## Example (YouTube Channel Notifications)
+
+Below is the UML class diagram for the YouTube Channel Notifications scenario:
+
+```mermaid
+classDiagram
+    direction TB
+    class ISubscriber {
+        <<interface>>
+        +update(videoTitle string) void
+    }
+    class Subscriber {
+        -name string
+        +update(videoTitle string) void
+    }
+    class Channel {
+        -subscribers vector~ISubscriber*~
+        -name string
+        -channelMutex mutex
+        +subscribe(subscriber ISubscriber*) void
+        +unsubscribe(subscriber ISubscriber*) void
+        +uploadVideo(title string) void
+    }
+
+    ISubscriber <|.. Subscriber : realizes
+    ISubscriber --o Channel : notifies
+```
 
 This C++ implementation implements thread safe subscriptions and handles notifications using asynchronous execution threads to prevent blocking bottlenecks.
 
@@ -178,6 +206,8 @@ Synchronous iteration over raw observer pointers causes two primary issues in co
 * **Slow Observer Bottleneck**: If the Subject notifies observers sequentially in a single thread, any delayed subscriber (due to I/O or network transactions) will block subsequent notifications.
 * **Asynchronous Decoupling**: To resolve this, take a local snapshot copy of the observers list under lock, release the lock immediately, and dispatch notifications asynchronously (e.g. using a thread pool).
 
+> **Notification Ordering**: Dispatching via detached threads (as in the example) makes notification order non-deterministic — observers may receive `update()` in any sequence. Systems where observer B must process after observer A (e.g. a logger must run before an email sender) require a sequenced dispatch mechanism such as a priority queue or a single ordered thread pool, not raw detached threads.
+
 ### The Lapsed Listener Problem (Memory Leaks & Dangling Pointers)
 
 The Lapsed Listener Problem occurs when a long lived Subject retains a reference to a short lived Observer that is no longer needed, preventing cleanup.
@@ -231,10 +261,7 @@ public:
 
 ## Design Tradeoffs
 
-### Advantages
-* **Loose Coupling**: The Subject only knows that its Observers implement the `IObserver` interface. It does not need to know their concrete classes, simplifying codebase modularity.
-* **Open/Closed Principle (OCP)**: New observer types can be introduced without altering the subject's implementation.
-
-### Drawbacks
-* **Dangling References**: In languages without garbage collection (e.g. C++), managing observer lifetimes requires extra care to prevent the lapsed listener problem.
-* **Cascade Updates & Performance**: A single update in the Subject might trigger a cascade of updates across observers, leading to performance degradation if not dispatched asynchronously.
+| Advantages                                                                                                                                                                             | Drawbacks & Limitations                                                                                                                                                                     |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Loose Coupling**: The Subject only knows that its Observers implement the `ISubscriber` interface. It does not need to know their concrete classes, simplifying codebase modularity. | **Dangling References**: In languages without garbage collection (e.g. C++), managing observer lifetimes requires extra care to prevent the lapsed listener problem.                        |
+| **Open/Closed Principle (OCP)**: New observer types can be introduced without altering the subject's implementation.                                                                   | **Cascade Updates & Performance**: A single update in the Subject might trigger a cascade of updates across observers, leading to performance degradation if not dispatched asynchronously. |

@@ -14,9 +14,20 @@ Creational factory designs typically manifest in three distinct forms:
 | **Factory Method** | Delegate instantiation to subclasses | Virtual creation methods overridden by derived creators | Medium (OCP compliant for new products) |
 | **Abstract Factory** | Create families of related/dependent products | Polymorphic interfaces grouping multiple creation methods | High (ensures product suite compatibility) |
 
+> **Scope**: This note covers the **Factory Method** pattern in depth. Abstract Factory, which creates entire families of related objects through a group of coordinated factory methods, is a distinct pattern and warrants a dedicated note.
+
+### Factory Method Participants
+
+| Participant | Responsibility |
+| --- | --- |
+| **Product** | Defines the interface of objects the factory method creates. |
+| **ConcreteProduct** | Implements the Product interface. |
+| **Creator** | Declares the factory method, which returns an object of type Product. May also define default implementation. |
+| **ConcreteCreator** | Overrides the factory method to return an instance of a ConcreteProduct. |
+
 ---
 
-## UML Representation
+## Standard UML Representation
 
 Below is the structure of the **Factory Method** pattern:
 
@@ -45,10 +56,10 @@ classDiagram
         +createProduct() Product*
     }
 
-    ConcreteProductA ..|> Product : realizes
-    ConcreteProductB ..|> Product : realizes
-    ConcreteCreatorA ..|> Creator : realizes
-    ConcreteCreatorB ..|> Creator : realizes
+    Product <|.. ConcreteProductA : realizes
+    Product <|.. ConcreteProductB : realizes
+    Creator <|.. ConcreteCreatorA : realizes
+    Creator <|.. ConcreteCreatorB : realizes
     ConcreteCreatorA --> ConcreteProductA : instantiates
     ConcreteCreatorB --> ConcreteProductB : instantiates
 ```
@@ -63,7 +74,53 @@ classDiagram
 
 ---
 
-## C++ Implementation (Scheduled Order Dispatcher)
+## Example (Scheduled Order Dispatcher)
+
+Below is the UML class diagram for the Scheduled Order Dispatcher scenario:
+
+```mermaid
+classDiagram
+    direction TB
+    class Order {
+        <<abstract>>
+        #orderId string
+        #amount double
+        +dispatch() void
+    }
+    class InstantOrder {
+        +dispatch() void
+    }
+    class ScheduledOrder {
+        -deliveryWindow string
+        +dispatch() void
+    }
+    class OrderDispatcher {
+        <<abstract>>
+        +createOrder(id string, amt double) unique_ptr~Order~*
+        +processAndDispatch(id string, amt double) void
+    }
+    class InstantOrderDispatcher {
+        +createOrder(id string, amt double) unique_ptr~Order~
+    }
+    class ScheduledOrderDispatcher {
+        -scheduleTimeWindow string
+        +createOrder(id string, amt double) unique_ptr~Order~
+    }
+    class DispatchRegistry {
+        -registry unordered_map~string_shared_ptr~OrderDispatcher~~
+        -registryMutex mutex
+        +registerDispatcher(type string, dispatcher shared_ptr~OrderDispatcher~) void
+        +getDispatcher(type string) shared_ptr~OrderDispatcher~
+    }
+
+    Order <|-- InstantOrder : inherits
+    Order <|-- ScheduledOrder : inherits
+    OrderDispatcher <|-- InstantOrderDispatcher : inherits
+    OrderDispatcher <|-- ScheduledOrderDispatcher : inherits
+    InstantOrderDispatcher ..> InstantOrder : instantiates
+    ScheduledOrderDispatcher ..> ScheduledOrder : instantiates
+    OrderDispatcher --o DispatchRegistry : aggregates
+```
 
 This implementation demonstrates a thread safe scheduled order dispatch system using the Factory Method pattern. It features robust dynamic allocation, custom exceptions, and registry synchronization.
 
@@ -95,6 +152,24 @@ public:
     virtual void dispatch() = 0;
 };
 
+// Abstract Creator
+class OrderDispatcher {
+public:
+    virtual ~OrderDispatcher() = default;
+    
+    // Factory Method
+    virtual unique_ptr<Order> createOrder(string id, double amt) = 0;
+
+    // Helper business logic leveraging the Factory Method
+    void processAndDispatch(string id, double amt) {
+        unique_ptr<Order> order = createOrder(id, amt);
+        if (!order) {
+            throw DispatchException("Order creation failed");
+        }
+        order->dispatch();
+    }
+};
+
 // Concrete Products
 class InstantOrder : public Order {
 public:
@@ -116,24 +191,6 @@ public:
     void dispatch() override {
         cout << "Dispatching Scheduled Order [" << orderId << "] for window: " 
              << deliveryWindow << ". Amount: " << amount << "\n";
-    }
-};
-
-// Abstract Creator
-class OrderDispatcher {
-public:
-    virtual ~OrderDispatcher() = default;
-    
-    // Factory Method
-    virtual unique_ptr<Order> createOrder(string id, double amt) = 0;
-
-    // Helper business logic leveraging the Factory Method
-    void processAndDispatch(string id, double amt) {
-        unique_ptr<Order> order = createOrder(id, amt);
-        if (!order) {
-            throw DispatchException("Order creation failed");
-        }
-        order->dispatch();
     }
 };
 
@@ -220,9 +277,7 @@ int main() {
 
 ## Design Tradeoffs
 
-### Advantages & SOLID Alignment
-* **OCP Compliance**: Introducing a new product variant only requires adding a new creator class, leaving the client and existing dispatchers unchanged.
-* **SRP Alignment**: Separates execution orchestration rules from concrete class construction mechanics.
-
-### Drawbacks
-* **Class Proliferation**: Defining a new product type requires creating both the product class and a corresponding creator class, doubling class counts.
+| Advantages & SOLID Alignment | Drawbacks & Limitations |
+| --- | --- |
+| **OCP Compliance**: Introducing a new product variant only requires adding a new creator class, leaving the client and existing dispatchers unchanged. | **Class Proliferation**: Defining a new product type requires creating both the product class and a corresponding creator class, doubling class counts. |
+| **SRP Alignment**: Separates execution orchestration rules from concrete class construction mechanics. | |

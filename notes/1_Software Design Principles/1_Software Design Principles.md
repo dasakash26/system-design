@@ -16,30 +16,19 @@ General design principles guide the macro architecture of a system, focusing on 
 | **Separation of Concerns** | Isolate system responsibilities | Modular boundary isolation | Recompilation cascades, hard to optimize critical hot paths. |
 | **Law of Demeter** | Minimize immediate collaborators | Strict encapsulation boundaries | Train wreck traversal calls, pointer chaining, fragile layout dependencies. |
 
-### KISS (Keep It Simple, Stupid)
-* **Goal**: Focus on the simplest solution that meets requirements.
-* **Low Level Impact**: Fewer conditional branches improve **CPU branch prediction** accuracy. Less code minimizes instruction cache pollution.
-
-### DRY (Don't Repeat Yourself)
-* **Goal**: Centralize every business logic rule in exactly one place.
-* **Low Level Impact**: Prevents split state mutations. Reduces compiled binary size, which optimizes **CPU instruction cache** efficiency.
-
-### YAGNI (You Aren't Gonna Need It)
-* **Goal**: Do not write code for hypothetical future requirements.
-* **Low Level Impact**: Reduces code clutter and avoids unnecessary layers of indirection that slow down **compile times**.
-
 ### Separation of Concerns
-* **Goal**: Partition the system into distinct features with minimal overlap.
-* **Layered Architecture**: Typically implemented using **Controller**, **Service**, and **Repository** layers:
-  1. **Controller Layer**: Handles incoming transport details (HTTP/gRPC) and requests routing.
-  2. **Service Layer**: Implements core business rules, completely isolated from storage or transport logic.
-  3. **Repository Layer**: Coordinates database access and mapping.
+
+Partition the system into distinct features with minimal overlap, typically implemented using a layered architecture:
+1. **Controller Layer**: Handles incoming transport details (HTTP/gRPC) and request routing.
+2. **Service Layer**: Implements core business rules, completely isolated from storage or transport logic.
+3. **Repository Layer**: Coordinates database access and mapping.
 
 ### Law of Demeter
-* **Goal**: Objects must interact only with their immediate neighbors.
-* **Pointer Chaining Violation**: Avoid calling `order.getCustomer().getAddress().getZipCode()` (Train Wreck).
-* **Encapsulated Solution**: Call `order.getCustomerZipCode()`.
-* **Low Level Impact**: Prevents callers from depending on the memory layout and structure of nested classes.
+
+Objects must interact only with their immediate neighbors. Avoid nested object graph traversal (train wrecks) which leak layout details:
+* **Violation**: `order.getCustomer().getAddress().getZipCode()`
+* **Solution**: `order.getCustomerZipCode()`
+
 
 ---
 
@@ -159,7 +148,28 @@ LSP ensures that the assumptions a client makes about a base class hold true whe
 | **Method Rules** | Preconditions | Subclass methods must not require more restrictive inputs than base methods. |
 | **Method Rules** | Postconditions | Subclass methods must guarantee at least what the base class methods guarantee. |
 
-#### C++ Example
+#### C++ Violation Example
+
+A classic violation: `Bird` declares `fly()`, and `Penguin` inherits it but throws an exception. Any code calling `bird->fly()` on a `Penguin` pointer breaks at runtime — the substitution fails.
+
+```cpp
+// VIOLATION: Penguin cannot fulfil the fly() postcondition
+class Bird {
+public:
+    virtual void fly() { cout << "Flying...\n"; }
+};
+
+class Penguin : public Bird {
+public:
+    void fly() override {
+        throw runtime_error("Penguins cannot fly"); // Breaks caller assumptions
+    }
+};
+
+void makeFly(Bird& b) { b.fly(); } // Crashes when passed a Penguin
+```
+
+#### C++ Correct Example
 
 ```cpp
 #include <iostream>
@@ -310,3 +320,19 @@ int main() {
     return 0;
 }
 ```
+
+> **DIP vs. Dependency Injection**: DIP is a design *principle* — high level modules must not depend on low level modules; both depend on abstractions. Dependency Injection (DI) is one *mechanism* to satisfy it: the abstraction is passed in (via constructor, setter, or factory) rather than instantiated internally. DIP can also be satisfied through template parameters (compile time injection) or service locators. Conflating DI with DIP is a common mistake — DI is the technique, DIP is the goal.
+
+---
+
+## SOLID Interactions
+
+The five principles are not independent. They reinforce and sometimes tension each other:
+
+| Interaction | Description |
+| --- | --- |
+| **OCP depends on LSP** | You can extend freely only if subtypes behave correctly. A broken substitution means every extension risks breaking existing clients. |
+| **ISP enables DIP** | Narrow, focused interfaces are easier to invert. A fat interface forces high level modules to import more low level details than they need. |
+| **OCP and SRP can conflict** | Each new extension class adds a responsibility axis. Keeping classes small (SRP) while making the system open to extension (OCP) requires deliberate interface design. |
+| **SRP scopes LSP** | When each class has one responsibility, its contract is narrow and easy to honour in subclasses. Mixed responsibility classes produce wide contracts that subtypes struggle to fully satisfy. |
+| **DIP is the mechanism OCP uses** | OCP says "closed for modification"; DIP is how you achieve that — the existing code depends on an abstraction, so new implementations extend without touching it. |

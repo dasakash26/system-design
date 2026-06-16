@@ -28,6 +28,114 @@ Below is the conceptual UML diagram showing how the Observer, Decorator, Strateg
 
 ![Notification Diagram](image.jpg)
 
+```mermaid
+classDiagram
+    direction TB
+    class INotification {
+        <<interface>>
+        +getContent() string
+    }
+    class SimpleNotification {
+        -text string
+        +SimpleNotification(msg string)
+        +getContent() string
+    }
+    class INotificationDecorator {
+        <<abstract>>
+        #wrappedNotification unique_ptr~INotification~
+        +INotificationDecorator(n INotification*)
+    }
+    class TimestampDecorator {
+        +TimestampDecorator(n INotification*)
+        +getContent() string
+    }
+    class SignatureDecorator {
+        -signature string
+        +SignatureDecorator(n INotification*, sig string)
+        +getContent() string
+    }
+    class IObserver {
+        <<interface>>
+        +update() void
+    }
+    class IObservable {
+        <<interface>>
+        +addObserver(observer IObserver*) void
+        +removeObserver(observer IObserver*) void
+        +notifyObservers() void
+    }
+    class NotificationObservable {
+        -observers vector~IObserver*~
+        -currentNotification INotification*
+        -registryMutex mutex
+        +addObserver(obs IObserver*) void
+        +removeObserver(obs IObserver*) void
+        +notifyObservers() void
+        +setNotification(notification INotification*) void
+        +getNotificationContent() string
+    }
+    class NotificationService {
+        -observable NotificationObservable*
+        -history vector~shared_ptr~INotification~~
+        -historyMutex mutex
+        -instance NotificationService*$
+        -instanceMutex mutex$
+        -NotificationService()
+        +getInstance() NotificationService*$
+        +getObservable() NotificationObservable*
+        +sendNotification(notification INotification*) void
+    }
+    class INotificationStrategy {
+        <<interface>>
+        +sendNotification(content string) void
+    }
+    class EmailStrategy {
+        -emailId string
+        +EmailStrategy(email string)
+        +sendNotification(content string) void
+    }
+    class SMSStrategy {
+        -mobileNumber string
+        +SMSStrategy(phone string)
+        +sendNotification(content string) void
+    }
+    class PopUpStrategy {
+        +sendNotification(content string) void
+    }
+    class Logger {
+        -notificationObservable NotificationObservable*
+        +Logger()
+        +update() void
+    }
+    class NotificationEngine {
+        -notificationObservable NotificationObservable*
+        -strategies vector~unique_ptr~INotificationStrategy~~
+        -engineMutex mutex
+        +NotificationEngine()
+        +addNotificationStrategy(ns INotificationStrategy*) void
+        +update() void
+    }
+
+    SimpleNotification ..|> INotification : realizes
+    INotificationDecorator ..|> INotification : realizes
+    INotificationDecorator o-- INotification : wraps
+    TimestampDecorator --|> INotificationDecorator : inherits
+    SignatureDecorator --|> INotificationDecorator : inherits
+    NotificationObservable ..|> IObservable : realizes
+    NotificationObservable o-- IObserver : notifies
+    NotificationObservable --> INotification : holds
+    NotificationService o-- NotificationObservable : delegates to
+    NotificationService o-- INotification : logs
+    EmailStrategy ..|> INotificationStrategy : realizes
+    SMSStrategy ..|> INotificationStrategy : realizes
+    PopUpStrategy ..|> INotificationStrategy : realizes
+    Logger ..|> IObserver : realizes
+    Logger --> NotificationObservable : queries
+    NotificationEngine ..|> IObserver : realizes
+    NotificationEngine o-- INotificationStrategy : delegates to
+    NotificationEngine --> NotificationObservable : queries
+```
+
 ---
 
 ## Complete Code
@@ -321,6 +429,33 @@ int main() {
 
 ---
 
+## Code Analysis
+
+The `NotificationSystem` orchestrates multiple structural and behavioral design patterns to support dynamic message formatting and extensible delivery options:
+
+### 1. The Decorator Pattern (Dynamic Message Wrapping)
+To format message contents (e.g. prepending timestamps or appending user signatures) without cluttering base types:
+*   **Component Interface (`INotification`)**: Establishes the `getContent()` blueprint.
+*   **Concrete Component (`SimpleNotification`)**: Serves as the raw, unmodified base message.
+*   **Abstract Decorator (`INotificationDecorator`)**: Conforms to the `INotification` interface while maintaining ownership (`std::unique_ptr<INotification>`) of the wrapped notification.
+*   **Concrete Decorator (`TimestampDecorator`, `SignatureDecorator`)**: Inherit from the decorator and augment the return value of `getContent()` dynamically at runtime.
+
+### 2. The Observer Pattern (Asynchronous Event Routing)
+Downstream logging and delivery services register as subscribers:
+*   **Subject (`NotificationObservable`)**: Exposes methods to register, remove, and notify observers. It manages a vector of `IObserver*` listener pointers.
+*   **Observers (`Logger`, `NotificationEngine`)**: Register themselves to the observable. Upon receiving notifications via `update()`, they query the subject's state (`getNotificationContent()`) to log or dispatch the message.
+
+### 3. The Strategy Pattern (Modular Dispatch Gateways)
+Rather than hardcoding specific transmission protocols inside the notification engine:
+*   **Strategy Interface (`INotificationStrategy`)**: Defines the standard interface `sendNotification(std::string content)`.
+*   **Concrete Strategies (`EmailStrategy`, `SMSStrategy`, `PopUpStrategy`)**: Implement custom transmission logic.
+*   **Context (`NotificationEngine`)**: Manages a registry of delivery strategies using `std::unique_ptr<INotificationStrategy>`, iterating over them to dispatch events upon state updates.
+
+### 4. The Singleton Pattern (Centralized Gateway)
+The entry point `NotificationService` coordinates historical logs and observable dispatches. It is implemented with thread safe Double Checked Locking, keeping global state singletons synchronized.
+
+---
+
 ## Concurrency & Synchronization
 
 To satisfy production grade expectations, shared resources are locked:
@@ -334,10 +469,7 @@ To satisfy production grade expectations, shared resources are locked:
 
 ## SOLID Trade-offs
 
-### SOLID Principles Satisfied
-*   **Open/Closed Principle (OCP)**: We can add new notification decorators (e.g. `EncryptionDecorator`) or new notification channels (e.g. `SlackStrategy`) without modifying any of the engine's core orchestration code.
-*   **Single Responsibility Principle (SRP)**: Notification composition (Decorator), routing tracking (Observer), and channel delivery (Strategy) are encapsulated into separate, modular components.
-
-### Design Drawbacks & Tradeoffs
-*   **Subclass Explosion of Decorators**: While decorators avoid class explosion of combinations compared to traditional inheritance, adding many small decorators still results in long wrapper chains that can become complex to debug and trace.
-*   **Memory Management Overhead**: Since C++ does not feature garbage collection, using raw pointer decorator chains requires precise parent-decorator destructors or smart pointers (`std::unique_ptr`) to avoid memory leaks.
+| SOLID Principles Satisfied | Design Drawbacks & Tradeoffs |
+| --- | --- |
+| **Open/Closed Principle (OCP)**: We can add new notification decorators (e.g. `EncryptionDecorator`) or new notification channels (e.g. `SlackStrategy`) without modifying any of the engine's core orchestration code. | **Subclass Explosion of Decorators**: While decorators avoid class explosion of combinations compared to traditional inheritance, adding many small decorators still results in long wrapper chains that can become complex to debug and trace. |
+| **Single Responsibility Principle (SRP)**: Notification composition (Decorator), routing tracking (Observer), and channel delivery (Strategy) are encapsulated into separate, modular components. | **Memory Management Overhead**: Since C++ does not feature garbage collection, using raw pointer decorator chains requires precise parent-decorator destructors or smart pointers (`std::unique_ptr`) to avoid memory leaks. |

@@ -18,7 +18,7 @@ The static class hierarchy decouples request emission from execution. The invoke
 
 ---
 
-## UML Representation
+## Standard UML Representation
 
 ```mermaid
 classDiagram
@@ -41,10 +41,14 @@ classDiagram
         +setCommand(idx int, cmd Command)
         +pressButton(idx int)
     }
+    class Client {
+    }
 
-    ConcreteCommand ..|> Command : realizes
+    Command <|.. ConcreteCommand : realizes
     ConcreteCommand --> Receiver : delegates to
-    Invoker o-- Command : aggregates
+    Command --o Invoker : aggregates
+    Client --> Invoker : configures
+    Client --> ConcreteCommand : creates
 ```
 
 ---
@@ -57,7 +61,52 @@ classDiagram
 
 ---
 
-## C++ Implementation (Smart Home Automation System)
+## Example (Smart Home Automation System)
+
+Below is the UML class diagram for the Smart Home Automation System scenario:
+
+```mermaid
+classDiagram
+    direction TB
+    class Command {
+        <<interface>>
+        +execute() void
+        +undo() void
+    }
+    class Light {
+        +on() void
+        +off() void
+    }
+    class Fan {
+        +on() void
+        +off() void
+    }
+    class LightCommand {
+        -light shared_ptr~Light~
+        +LightCommand(l shared_ptr~Light~)
+        +execute() void
+        +undo() void
+    }
+    class FanCommand {
+        -fan shared_ptr~Fan~
+        +FanCommand(f shared_ptr~Fan~)
+        +execute() void
+        +undo() void
+    }
+    class RemoteController {
+        -buttons shared_ptr~Command~[4]
+        -buttonPressed bool[4]
+        -controllerMutex mutex
+        +setCommand(idx int, cmd shared_ptr~Command~) void
+        +pressButton(idx int) void
+    }
+
+    Command <|.. LightCommand : realizes
+    Command <|.. FanCommand : realizes
+    LightCommand --> Light : delegates to
+    FanCommand --> Fan : delegates to
+    Command --o RemoteController : aggregates
+```
 
 This implementation demonstrates a thread safe remote controller invoking home automation commands, demonstrating safe memory management, custom exceptions, and scoped locking.
 
@@ -69,6 +118,14 @@ This implementation demonstrates a thread safe remote controller invoking home a
 #include <string>
 
 using namespace std;
+
+// Command Interface
+class Command {
+public:
+    virtual ~Command() = default;
+    virtual void execute() = 0;
+    virtual void undo() = 0;
+};
 
 // Custom System Exception
 class CommandException : public runtime_error {
@@ -87,14 +144,6 @@ class Fan {
 public:
     void on() { cout << "Fan is ON\n"; }
     void off() { cout << "Fan is OFF\n"; }
-};
-
-// Command Interface
-class Command {
-public:
-    virtual ~Command() = default;
-    virtual void execute() = 0;
-    virtual void undo() = 0;
 };
 
 // Concrete Commands
@@ -197,14 +246,31 @@ int main() {
 * **Executing Outside Locks**: The call to `Command::execute()` or `Command::undo()` runs **outside the mutex lock**.
 * **Avoiding Stalls**: Smart home commands often execute slow network requests (WiFi communication). Copying the pointer under lock and executing it outside prevents blocking the remote controller's registration threads.
 
+### Undo / Redo History Stack
+
+The toggle model in the example above is a simplified invocation mechanism. The primary reason Command encapsulates requests as objects is to support a **history stack** — the invoker maintains an ordered log of executed commands and can walk it backwards to undo or forwards to redo.
+
+```
+Execute:  [Cmd1] [Cmd2] [Cmd3]   ← top
+Undo Cmd3: calls Cmd3.undo(), pops from history
+Undo Cmd2: calls Cmd2.undo(), pops again
+Redo Cmd2: calls Cmd2.execute(), pushes back
+```
+
+The invoker for a history-based design holds two stacks:
+
+| Stack       | Contents                   | Operation                                                 |
+| ----------- | -------------------------- | --------------------------------------------------------- |
+| `undoStack` | Commands executed in order | `execute()` pushes here; `undo()` pops and calls `undo()` |
+| `redoStack` | Commands that were undone  | `undo()` pushes here; `redo()` pops and re-executes       |
+
+This is the architecture used in document editors, terminal shells (`Ctrl+Z`), and game state managers. The toggle model in the smart home example is a degenerate case where the history depth is one.
+
 ---
 
 ## Design Tradeoffs
 
-### Advantages & SOLID Alignment
-* **OCP Compliance**: You can add new command subclasses (e.g. `ThermostatCommand`) without modifying the invoker or existing commands.
-* **SRP Alignment**: Segregates request triggering logic (Invoker), request parameter binding (Command), and core execution logic (Receiver).
-
-### Drawbacks
-* **Subclass Proliferation**: Every unique command behavior requires a separate class definition, leading to class explosion.
-* **Call Indirection**: Introduces additional execution layers, which can complicate debugging trace logs.
+| Advantages & SOLID Alignment | Drawbacks & Limitations |
+| --- | --- |
+| **OCP Compliance**: You can add new command subclasses (e.g. `ThermostatCommand`) without modifying the invoker or existing commands. | **Subclass Proliferation**: Every unique command behavior requires a separate class definition, leading to class explosion. |
+| **SRP Alignment**: Segregates request triggering logic (Invoker), request parameter binding (Command), and core execution logic (Receiver). | **Call Indirection**: Introduces additional execution layers, which can complicate debugging trace logs. |
