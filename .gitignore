@@ -1,2 +1,54 @@
+# macOS system files
 .DS_Store
-agents.md
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.Spotlight-V100
+.Trashes
+VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Folder-specific AI agent guidelines
+**/Agents.md
+
+# Repository-specific ignores
+lld/lectures/
+
+# C++ Compilation and Build Artifacts
+build/
+Build/
+build-*/
+cmake-build-*/
+out/
+bin/
+
+# Object files, libraries, and executables
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.d
+*.ii
+*.s
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CMakeSettings.json
+cmake_install.cmake
+Makefile
+install_manifest.txt
+
+# Editor / LSP configuration and caches
+.cache/
+.clangd/
+.vscode/
+.idea/
+.vs/
+compile_commands.json

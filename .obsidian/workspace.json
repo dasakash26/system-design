@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "projects/2_Notification/2_Notification.md",
-                "mode": "preview",
+                "file": "README.md",
+                "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2_Notification"
+              "title": "README"
             }
           }
         ]
@@ -78,8 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 267,
-    "collapsed": true
+    "width": 267
   },
   "right": {
     "id": "949082d89d43e118",
@@ -187,6 +186,21 @@
   },
   "active": "f58fa81b5b7be89b",
   "lastOpenFiles": [
+    "Agents.md",
+    "lld/README.md",
+    "lld/Agents.md",
+    "hld/Agents.md",
+    "lld/notes/10_Facade Pattern/10_Facade Pattern.md",
+    "projects/2_Notification/build/CMakeFiles/Progress/7",
+    "projects/2_Notification/build/CMakeFiles/NotificationSystemApp.dir/src/NotificationService.cpp-daf599d6.o.tmp",
+    "projects/2_Notification/build/CMakeFiles/Progress/5",
+    "projects/2_Notification/build/CMakeFiles/NotificationSystemApp.dir/src/NotificationObservers.cpp-b4a319d9.o.tmp",
+    "projects/2_Notification/build/CMakeFiles/Progress/4",
+    "projects/2_Notification/build/CMakeFiles/NotificationSystemApp.dir/src/NotificationObservable.cpp-f3acb8e4.o.tmp",
+    "projects/2_Notification/build/CMakeFiles/Progress/3",
+    "projects/2_Notification/build/CMakeFiles/NotificationSystemApp.dir/src/NotificationApp.cpp-8372e5f3.o.tmp",
+    "projects/2_Notification/build/CMakeFiles/Progress/1",
+    "projects/2_Notification/build/CMakeFiles/Progress/count.txt",
     "notes/real_world_examples.md",
     "Untitled.md",
     "projects/2_Notification/2_Notification.md",
@@ -200,22 +214,11 @@
     "notes/3_Strategy Pattern/3_Strategy Pattern.md",
     "notes/10_Facade Pattern/10_Facade Pattern.md",
     "notes/2_Delivery Framework/2_Delivery Framework.md",
-    "Agents.md",
     "notes/4_Factory Pattern/4_Factory Pattern.md",
     "2026-06-08.md",
-    "Untitled 2.base",
-    "Untitled 1.base",
-    "Untitled.base",
     "Untitled 2.canvas",
     "Untitled 1.canvas",
     "Untitled.canvas",
-    "scratch/temp_compile/10_Facade_Pattern.md_0.cpp.out",
-    "scratch/temp_compile/10_Facade_Pattern.md_0.cpp",
-    "scratch/temp_compile/1_Software_Design_Principles.md_4.cpp.out",
-    "scratch/temp_compile/1_Software_Design_Principles.md_4.cpp",
-    "scratch/temp_compile/1_Software_Design_Principles.md_3.cpp.o",
-    "scratch/temp_compile/1_Software_Design_Principles.md_3.cpp-9a9f1d9b.o.tmp",
-    "scratch/temp_compile/1_Software_Design_Principles.md_3.cpp",
     "projects/1_Zomato/1_Zomato.md",
     "projects/0_Notepad/0_Notepad.md",
     "Projects/1_Zomato/1_Zomato.canvas",
@@ -229,12 +232,8 @@
     "notes/1_Software Design Principles/1_Software Design Principles.md",
     "notes/2_Delivery Framework/image.png",
     "notes/0_OOP Concepts/0_OOP Concepts.md",
-    "notes/LLD Projects/0_Notepad/0_Notepad.md",
     "notes/LLD Projects/0_Notepad/image.png",
     "notes/LLD Projects/1_Zomato/image.png",
-    "notes/6_Observer Pattern.md",
-    "notes/1_Software Design Principles.md",
-    "notes/4_Factory Pattern.md",
     "notes/3_Strategy Pattern/abd67c0e-a449-4e35-a7f2-350f7829b82a.png",
     "notes/Strategy Pattern/abd67c0e-a449-4e35-a7f2-350f7829b82a.png",
     "notes/LLD Projects/Notepad/image.png",
