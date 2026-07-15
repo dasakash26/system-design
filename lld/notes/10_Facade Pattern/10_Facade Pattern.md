@@ -8,11 +8,11 @@ The Facade pattern is a structural design pattern that provides a simplified, un
 
 The Facade pattern acts as an entry point to a subsystem. It delegates client requests to the appropriate subsystem classes, coordinating their interaction without preventing clients from accessing subsystem classes directly if they require advanced customization.
 
-| Participant | Responsibility |
-| --- | --- |
-| **Facade** | Coordinates calls to various subsystem classes and provides a simplified interface to the client. |
+| Participant           | Responsibility                                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Facade**            | Coordinates calls to various subsystem classes and provides a simplified interface to the client.                   |
 | **Subsystem Classes** | Implement specific features of the subsystem; they operate independently of the Facade and have no reference to it. |
-| **Client** | Calls the Facade instead of invoking subsystem operations directly. |
+| **Client**            | Calls the Facade instead of invoking subsystem operations directly.                                                 |
 
 ---
 

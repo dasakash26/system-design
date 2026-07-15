@@ -36,13 +36,13 @@ Objects must interact only with their immediate neighbors. Avoid nested object g
 
 SOLID principles guide class hierarchy design, helping developers build codebases that are robust under changing requirements.
 
-| Principle | Core Objective | Low Level Impact |
-| --- | --- | --- |
-| **Single Responsibility (SRP)** | One reason to change | Flat, cohesive source files; minimal recompilation domains. |
-| **Open/Closed (OCP)** | Open for extension, closed for modification | Dynamic dispatch via stable vtable slots, preventing recompilation cascades. |
-| **Liskov Substitution (LSP)** | Safe subtype substitution | Correct inheritance hierarchy, predictable virtual method behavior. |
-| **Interface Segregation (ISP)** | Client specific narrow contracts | Reduced vtable sizes, minimal dependency pollution in headers. |
-| **Dependency Inversion (DIP)** | Depend on abstractions | Decoupling of compile time dependencies, interface libraries. |
+| Principle                       | Core Objective                              | Low Level Impact                                                             |
+| ------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Single Responsibility (SRP)** | One reason to change                        | Flat, cohesive source files; minimal recompilation domains.                  |
+| **Open/Closed (OCP)**           | Open for extension, closed for modification | Dynamic dispatch via stable vtable slots, preventing recompilation cascades. |
+| **Liskov Substitution (LSP)**   | Safe subtype substitution                   | Correct inheritance hierarchy, predictable virtual method behavior.          |
+| **Interface Segregation (ISP)** | Client specific narrow contracts            | Reduced vtable sizes, minimal dependency pollution in headers.               |
+| **Dependency Inversion (DIP)**  | Depend on abstractions                      | Decoupling of compile time dependencies, interface libraries.                |
 
 ### Single Responsibility Principle (SRP)
 

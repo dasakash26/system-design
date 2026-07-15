@@ -19,3 +19,7 @@ A reference repository for High-Level Design (HLD) systems scalability and Low-L
 - **HLD Course**: Hello Interview / System Design Primer
 - **Book**: *Design Patterns: Elements of Reusable Object-Oriented Software* (Gang of Four)
 
+---
+# Todos
+[ ]  practise: awesome repo simple 2
+[ ]  study: next 2 design pattern
