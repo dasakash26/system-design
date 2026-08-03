@@ -10,9 +10,8 @@ A reference repository for High-Level Design (HLD) systems scalability and Low-L
   - Distributed systems theory, scalability, load balancing, caching, database sharding, and case studies.
 - [**Low-Level Design (LLD)**](./lld/README.md)
   - OOP principles, SOLID design, design patterns, and C++ implementations.
-- [**LLD Recap & Mind Map**](./LLD_RECAP.md)
+- [**LLD Recap & Mind Map**](./lld/LLD_RECAP.md)
   - Consolidated recap of all completed patterns, case studies, decision matrix, and mind map.
-
 ---
 
 ## References

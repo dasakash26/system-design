@@ -1,20 +1,23 @@
 # Factory Design Pattern
 
-The Factory pattern is a creational design pattern that abstracts the instantiation logic of objects. Decoupling client code from concrete types is achieved by delegating instantiation to a specialized creator entity.
+The Factory pattern is a `creational design pattern` that abstracts the instantiation logic of objects. 
+Decoupling client code from concrete types is achieved by delegating instantiation to a specialised creator entity.
 
 ---
-
 ## Core Architecture
 
 Creational factory designs typically manifest in three distinct forms:
 
-| Pattern Variant | Core Intent | Instantiation Mechanism | Flexibility Level |
-| --- | --- | --- | --- |
-| **Simple Factory** | Centralize creation logic in a single class | Static method with conditional branching | Low (violates OCP on adding new types) |
-| **Factory Method** | Delegate instantiation to subclasses | Virtual creation methods overridden by derived creators | Medium (OCP compliant for new products) |
-| **Abstract Factory** | Create families of related/dependent products | Polymorphic interfaces grouping multiple creation methods | High (ensures product suite compatibility) |
-
-> **Scope**: This note covers the **Factory Method** pattern in depth. Abstract Factory, which creates entire families of related objects through a group of coordinated factory methods, is a distinct pattern and warrants a dedicated note.
+| Attribute                   | Simple Factory                                                                     | Factory Method                                                                                                                         | Abstract Factory                                                                                                                              |
+| --------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Core Intent**             | Centralise creation logic in a single class                                        | Delegate instantiation to subclasses                                                                                                   | Create families of related/dependent products                                                                                                 |
+| **Instantiation Mechanism** | Static method with conditional branching                                           | Virtual creation methods overridden by derived creators                                                                                | Polymorphic interfaces grouping multiple creation methods                                                                                     |
+| **Product Scope**           | Single product hierarchy                                                           | Single product hierarchy                                                                                                               | Multiple interdependent product families                                                                                                      |
+| **Fundamental Difference**  | Centralised conditional creator; client requests product by an input token or type | Decentralised creator subclasses supply specific products via polymorphism; client works with appropriate creator or subclass instance | Factory object exposes multiple creation methods to produce a family; client selects factory per family to ensure compatible product variants |
+| **Extensibility Model**     | New types require modifying the factory method (breaks Open/Closed)                | New products via new creator subclasses (Open/Closed compliant)                                                                        | New product families via new factory implementations                                                                                          |
+| **Code Complexity**         | Low                                                                                | Medium                                                                                                                                 | High                                                                                                                                          |
+| **Primary Use Case**        | Stable product sets with infrequent additions                                      | One product family needing runtime variation                                                                                           | Interdependent product suites with shared themes                                                                                              |
+| **Small Example**           | SimpleFactory::create(type) — e.g., PizzaFactory::create("Margherita")             | Creator::createProduct() — e.g., OrderDispatcher::createOrder("ORD-1")                                                                 | GUIFactory::createButton()/createCheckbox() — e.g., WindowsFactory                                                                            |
 
 ### Factory Method Participants
 
@@ -73,6 +76,7 @@ classDiagram
 * **Solution**: The client interacts exclusively with the abstract `Order` product and abstract `OrderDispatcher` creator, shielding the client from concrete class modifications.
 
 ---
+
 
 ## Example (Scheduled Order Dispatcher)
 
@@ -266,7 +270,6 @@ int main() {
 ```
 
 ---
-
 ## Concurrency & Design Considerations
 
 * **Thread Safe Registry**: When stored in a global lookup registry (e.g. `DispatchRegistry`), access to the dispatchers map must be protected using standard synchronization primitives (`std::mutex` or `std::shared_mutex`).
@@ -274,10 +277,3 @@ int main() {
 * **Factory Caching / Object Pooling**: For expensive products (like database connection adapters or network sockets), the concrete factory can encapsulate a thread safe object pool to recycle instances, minimizing memory churn.
 
 ---
-
-## Design Tradeoffs
-
-| Advantages & SOLID Alignment | Drawbacks & Limitations |
-| --- | --- |
-| **OCP Compliance**: Introducing a new product variant only requires adding a new creator class, leaving the client and existing dispatchers unchanged. | **Class Proliferation**: Defining a new product type requires creating both the product class and a corresponding creator class, doubling class counts. |
-| **SRP Alignment**: Separates execution orchestration rules from concrete class construction mechanics. | |

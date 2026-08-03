@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "LLD_RECAP.md",
+                "file": "lld/notes/14_Chain of Responsibility Pattern/14_Chain of Responsibility Pattern.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "LLD_RECAP"
+              "title": "14_Chain of Responsibility Pattern"
             }
           }
         ]
@@ -78,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 256
+    "width": 272
   },
   "right": {
     "id": "949082d89d43e118",
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "LLD_RECAP.md",
+                "file": "lld/notes/14_Chain of Responsibility Pattern/14_Chain of Responsibility Pattern.md",
                 "followCursor": true,
                 "showSearch": true,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of LLD_RECAP"
+              "title": "Outline of 14_Chain of Responsibility Pattern"
             }
           }
         ],
@@ -170,7 +170,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 310
+    "width": 292
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -186,20 +186,29 @@
   },
   "active": "7559d121a2e25b6b",
   "lastOpenFiles": [
-    "lld/README.md",
+    "lld/LLD_RECAP.md",
+    "lld/notes/5_Singleton Pattern/5_Singleton Pattern.md",
     "lld/notes/14_Chain of Responsibility Pattern/14_Chain of Responsibility Pattern.md",
-    "LLD_RECAP.md",
+    "lld/notes/7_Decorator Pattern/7_Decorator Pattern.md",
     "lld/notes/13_Proxy Pattern/13_Proxy Pattern.md",
+    "lld/notes/12_Template Method Pattern/12_Template Method Pattern.md",
+    "lld/notes/11_Composite Pattern/11_Composite Pattern.md",
+    "lld/notes/4_Factory Pattern/factory.cpp",
+    "lld/notes/4_Factory Pattern/4_Factory Pattern.md",
+    "Untitled.canvas",
+    "LLD_RECAP.md",
+    "lld/Agents.md",
+    "README.md",
+    "lld/projects/3_Elevator/3_Elevator.md",
+    "lld/README.md",
     "lld/notes/14_Chain of Responsibility Pattern",
     "lld/projects/2_Notification/src/ChainOfResponsibility.cpp",
     "lld/projects/2_Notification/include/ChainOfResponsibility.h",
-    "README.md",
     "hld/system-design-primer/solutions/system_design/pastebin/README.md",
     "hld/system-design-primer/README.md",
     "hld/README.md",
     "hld/system-design-primer/resources/study_guide.png",
     "hld/notes/db/01_sql_vs_nosql.md",
-    "lld/projects/3_Elevator/3_Elevator.md",
     "hld/Agents.md",
     "lld/projects/2_Notification/2_Notification.md",
     "lld/projects/3_Elevator",
@@ -207,24 +216,16 @@
     "lld/notes/1_Software Design Principles/1_Software Design Principles.md",
     "lld/notes/0_OOP Concepts/0_OOP Concepts.md",
     "lld/projects/0_Notepad/0_Notepad.md",
-    "lld/notes/7_Decorator Pattern/7_Decorator Pattern.md",
-    "lld/notes/5_Singleton Pattern/5_Singleton Pattern.md",
     "lld/notes/2_Delivery Framework/2_Delivery Framework.md",
     "lld/notes/3_Strategy Pattern/3_Strategy Pattern.md",
     "hld/notes/db",
     "hld/system-design-primer/solutions/object_oriented_design/call_center/call_center.py",
     "hld/system-design-primer/CONTRIBUTING.md",
-    "hld/system-design-primer/solutions/system_design/twitter/README.md",
-    "hld/system-design-primer/README-zh-TW.md",
-    "hld/system-design-primer/TRANSLATIONS.md",
     "hld/system-design-primer/solutions/object_oriented_design/parking_lot/parking_lot.py",
     "hld/system-design-primer/solutions/object_oriented_design/parking_lot/parking_lot.ipynb",
     "hld/system-design-primer/solutions/object_oriented_design/parking_lot/__init__.py",
-    "hld/system-design-primer/solutions/object_oriented_design/online_chat/online_chat.py",
     "hld/system-design-primer/solutions/system_design/web_crawler/web_crawler_basic.png",
     "hld/system-design-primer/solutions/system_design/web_crawler/web_crawler.png",
-    "hld/system-design-primer/solutions/system_design/web_crawler/README.md",
-    "hld/system-design-primer/solutions/system_design/web_crawler/README-zh-Hans.md",
     "hld/system-design-primer/solutions/system_design/twitter/twitter_basic.png",
     "hld/system-design-primer/solutions/system_design/twitter/twitter.png",
     "hld/system-design-primer/solutions/system_design/social_graph/social_graph_basic.png",
@@ -234,7 +235,6 @@
     "hld/system-design-primer/solutions/system_design/scaling_aws/scaling_aws_5.png",
     "Untitled 2.canvas",
     "Untitled 1.canvas",
-    "Untitled.canvas",
     "Projects/1_Zomato/1_Zomato.canvas",
     "Projects/0_Notepad/0_Notepad.canvas",
     "Projects/2_Notification/2_Notification.canvas"
