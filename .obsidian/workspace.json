@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "lld/notes/13_Proxy Pattern/13_Proxy Pattern.md",
+                "file": "LLD_RECAP.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "13_Proxy Pattern"
+              "title": "LLD_RECAP"
             }
           }
         ]
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "lld/notes/13_Proxy Pattern/13_Proxy Pattern.md",
+                "file": "LLD_RECAP.md",
                 "followCursor": true,
                 "showSearch": true,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 13_Proxy Pattern"
+              "title": "Outline of LLD_RECAP"
             }
           }
         ],
@@ -186,9 +186,14 @@
   },
   "active": "7559d121a2e25b6b",
   "lastOpenFiles": [
-    "README.md",
     "lld/README.md",
+    "lld/notes/14_Chain of Responsibility Pattern/14_Chain of Responsibility Pattern.md",
+    "LLD_RECAP.md",
     "lld/notes/13_Proxy Pattern/13_Proxy Pattern.md",
+    "lld/notes/14_Chain of Responsibility Pattern",
+    "lld/projects/2_Notification/src/ChainOfResponsibility.cpp",
+    "lld/projects/2_Notification/include/ChainOfResponsibility.h",
+    "README.md",
     "hld/system-design-primer/solutions/system_design/pastebin/README.md",
     "hld/system-design-primer/README.md",
     "hld/README.md",
@@ -216,19 +221,14 @@
     "hld/system-design-primer/solutions/object_oriented_design/parking_lot/parking_lot.ipynb",
     "hld/system-design-primer/solutions/object_oriented_design/parking_lot/__init__.py",
     "hld/system-design-primer/solutions/object_oriented_design/online_chat/online_chat.py",
-    "hld/system-design-primer/solutions/object_oriented_design/online_chat/online_chat.ipynb",
-    "hld/system-design-primer/solutions/object_oriented_design/online_chat/__init__.py",
-    "hld/system-design-primer/solutions/object_oriented_design/lru_cache/lru_cache.py",
     "hld/system-design-primer/solutions/system_design/web_crawler/web_crawler_basic.png",
     "hld/system-design-primer/solutions/system_design/web_crawler/web_crawler.png",
     "hld/system-design-primer/solutions/system_design/web_crawler/README.md",
     "hld/system-design-primer/solutions/system_design/web_crawler/README-zh-Hans.md",
     "hld/system-design-primer/solutions/system_design/twitter/twitter_basic.png",
     "hld/system-design-primer/solutions/system_design/twitter/twitter.png",
-    "hld/system-design-primer/solutions/system_design/twitter/README-zh-Hans.md",
     "hld/system-design-primer/solutions/system_design/social_graph/social_graph_basic.png",
     "hld/system-design-primer/solutions/system_design/social_graph/social_graph.png",
-    "hld/system-design-primer/solutions/system_design/social_graph/README.md",
     "hld/system-design-primer/solutions/system_design/scaling_aws/scaling_aws_7.png",
     "hld/system-design-primer/solutions/system_design/scaling_aws/scaling_aws_6.png",
     "hld/system-design-primer/solutions/system_design/scaling_aws/scaling_aws_5.png",
