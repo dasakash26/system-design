@@ -4,53 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "08c82544b3b8ca4b",
+        "id": "e3dcc68a0b797b10",
         "type": "tabs",
         "children": [
           {
-            "id": "8b73b40b029e589b",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "lld/notes/13_Proxy Pattern/13_Proxy Pattern.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "13_Proxy Pattern"
-            }
-          },
-          {
-            "id": "f58fa81b5b7be89b",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "lld/notes/11_Composite Pattern/11_Composite Pattern.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "11_Composite Pattern"
-            }
-          },
-          {
-            "id": "608c77b514b89be0",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "lld/notes/12_Template Method Pattern/12_Template Method Pattern.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "12_Template Method Pattern"
-            }
-          },
-          {
-            "id": "43715c8e4740b37c",
+            "id": "7559d121a2e25b6b",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -120,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 267
+    "width": 256
   },
   "right": {
     "id": "949082d89d43e118",
@@ -198,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "notes/10_Facade Pattern/10_Facade Pattern.md",
-                "followCursor": false,
-                "showSearch": false,
+                "file": "lld/notes/13_Proxy Pattern/13_Proxy Pattern.md",
+                "followCursor": true,
+                "showSearch": true,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 10_Facade Pattern"
+              "title": "Outline of 13_Proxy Pattern"
             }
           }
         ],
@@ -212,11 +170,11 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 310
   },
   "left-ribbon": {
     "hiddenItems": {
+      "vscode-editor:Create Code File": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -226,59 +184,59 @@
       "bases:Create new base": false
     }
   },
-  "active": "8b73b40b029e589b",
+  "active": "7559d121a2e25b6b",
   "lastOpenFiles": [
-    "lld/notes/12_Template Method Pattern/12_Template Method Pattern.md",
-    "lld/notes/11_Composite Pattern/11_Composite Pattern.md",
-    "lld/notes/10_Facade Pattern/10_Facade Pattern.md",
+    "README.md",
     "lld/README.md",
     "lld/notes/13_Proxy Pattern/13_Proxy Pattern.md",
-    "lld/notes/13_Proxy Pattern",
-    "lld/notes/1_Software Design Principles/1_Software Design Principles.md",
-    "test_template",
-    "lld/notes/12_Template Method Pattern",
-    "lld/notes/3_Strategy Pattern/3_Strategy Pattern.md",
-    "lld/Agents.md",
-    "lld/notes/11_Composite Pattern",
-    "hld/Agents.md",
-    "README.md",
-    "lld/notes/9_Adapter Pattern/9_Adapter Pattern.md",
-    "lld/notes/4_Factory Pattern/4_Factory Pattern.md",
-    "lld/projects/2_Notification/2_Notification.md",
-    "lld/projects/2_Notification/build/NotificationSystemApp",
-    "lld/projects/2_Notification/build/CMakeFiles/Progress/7",
-    "lld/projects/2_Notification/build/CMakeFiles/NotificationSystemApp.dir/src/NotificationStrategies.cpp.o",
-    "lld/projects/2_Notification/build/CMakeFiles/NotificationSystemApp.dir/src/NotificationStrategies.cpp.o.d",
-    "lld/projects/2_Notification/build/CMakeFiles/NotificationSystemApp.dir/src/NotificationStrategies.cpp-b5a5963e.o.tmp",
-    "lld/projects/2_Notification/build/CMakeFiles/Progress/6",
-    "lld/projects/2_Notification/image.jpg",
-    "lld/projects/1_Zomato/image.png",
-    "lld/notes/8_Command Pattern/8_Command Pattern.md",
+    "hld/system-design-primer/solutions/system_design/pastebin/README.md",
+    "hld/system-design-primer/README.md",
     "hld/README.md",
-    "Agents.md",
-    "notes/real_world_examples.md",
-    "Untitled.md",
-    "projects/2_Notification/2_Notification.md",
-    "projects/2_Notification/image.jpg",
-    "notes/5_Singleton Pattern/5_Singleton Pattern.md",
-    "notes/6_Observer Pattern/6_Observer Pattern.md",
-    "notes/7_Decorator Pattern/7_Decorator Pattern.md",
-    "notes/9_Adapter Pattern/9_Adapter Pattern.md",
-    "notes/8_Command Pattern/8_Command Pattern.md",
-    "notes/3_Strategy Pattern/3_Strategy Pattern.md",
-    "notes/10_Facade Pattern/10_Facade Pattern.md",
+    "hld/system-design-primer/resources/study_guide.png",
+    "hld/notes/db/01_sql_vs_nosql.md",
+    "lld/projects/3_Elevator/3_Elevator.md",
+    "hld/Agents.md",
+    "lld/projects/2_Notification/2_Notification.md",
+    "lld/projects/3_Elevator",
+    "lld/projects/1_Zomato/1_Zomato.md",
+    "lld/notes/1_Software Design Principles/1_Software Design Principles.md",
+    "lld/notes/0_OOP Concepts/0_OOP Concepts.md",
+    "lld/projects/0_Notepad/0_Notepad.md",
+    "lld/notes/7_Decorator Pattern/7_Decorator Pattern.md",
+    "lld/notes/5_Singleton Pattern/5_Singleton Pattern.md",
+    "lld/notes/2_Delivery Framework/2_Delivery Framework.md",
+    "lld/notes/3_Strategy Pattern/3_Strategy Pattern.md",
+    "hld/notes/db",
+    "hld/system-design-primer/solutions/object_oriented_design/call_center/call_center.py",
+    "hld/system-design-primer/CONTRIBUTING.md",
+    "hld/system-design-primer/solutions/system_design/twitter/README.md",
+    "hld/system-design-primer/README-zh-TW.md",
+    "hld/system-design-primer/TRANSLATIONS.md",
+    "hld/system-design-primer/solutions/object_oriented_design/parking_lot/parking_lot.py",
+    "hld/system-design-primer/solutions/object_oriented_design/parking_lot/parking_lot.ipynb",
+    "hld/system-design-primer/solutions/object_oriented_design/parking_lot/__init__.py",
+    "hld/system-design-primer/solutions/object_oriented_design/online_chat/online_chat.py",
+    "hld/system-design-primer/solutions/object_oriented_design/online_chat/online_chat.ipynb",
+    "hld/system-design-primer/solutions/object_oriented_design/online_chat/__init__.py",
+    "hld/system-design-primer/solutions/object_oriented_design/lru_cache/lru_cache.py",
+    "hld/system-design-primer/solutions/system_design/web_crawler/web_crawler_basic.png",
+    "hld/system-design-primer/solutions/system_design/web_crawler/web_crawler.png",
+    "hld/system-design-primer/solutions/system_design/web_crawler/README.md",
+    "hld/system-design-primer/solutions/system_design/web_crawler/README-zh-Hans.md",
+    "hld/system-design-primer/solutions/system_design/twitter/twitter_basic.png",
+    "hld/system-design-primer/solutions/system_design/twitter/twitter.png",
+    "hld/system-design-primer/solutions/system_design/twitter/README-zh-Hans.md",
+    "hld/system-design-primer/solutions/system_design/social_graph/social_graph_basic.png",
+    "hld/system-design-primer/solutions/system_design/social_graph/social_graph.png",
+    "hld/system-design-primer/solutions/system_design/social_graph/README.md",
+    "hld/system-design-primer/solutions/system_design/scaling_aws/scaling_aws_7.png",
+    "hld/system-design-primer/solutions/system_design/scaling_aws/scaling_aws_6.png",
+    "hld/system-design-primer/solutions/system_design/scaling_aws/scaling_aws_5.png",
     "Untitled 2.canvas",
     "Untitled 1.canvas",
     "Untitled.canvas",
     "Projects/1_Zomato/1_Zomato.canvas",
     "Projects/0_Notepad/0_Notepad.canvas",
-    "projects/0_Notepad/image.png",
-    "Projects/2_Notification/2_Notification.canvas",
-    "projects/1_Zomato/image.png",
-    "notes/2_Delivery Framework/image.png",
-    "notes/LLD Projects/0_Notepad/image.png",
-    "notes/LLD Projects/1_Zomato/image.png",
-    "notes/3_Strategy Pattern/abd67c0e-a449-4e35-a7f2-350f7829b82a.png",
-    "notes/Strategy Pattern/abd67c0e-a449-4e35-a7f2-350f7829b82a.png"
+    "Projects/2_Notification/2_Notification.canvas"
   ]
 }

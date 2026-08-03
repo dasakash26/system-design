@@ -14,7 +14,7 @@ VolumeIcon.icns
 
 # Repository-specific ignores
 lld/lectures/
-
+hld/ROADMAP.md
 
 # C++ Compilation and Build Artifacts
 build/

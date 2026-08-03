@@ -1,6 +1,7 @@
 # Proxy Design Pattern
 
-The Proxy pattern is a structural design pattern that lets you provide a substitute or placeholder for another object. A proxy controls access to the original object, allowing you to perform something either before or after the request gets through to the original object.
+The Proxy pattern is a structural design pattern that lets you provide a substitute or placeholder for another object. 
+A proxy controls access to the original object, allowing you to perform something either before or after the request gets through to the original object.
 
 ---
 
@@ -8,11 +9,11 @@ The Proxy pattern is a structural design pattern that lets you provide a substit
 
 The Proxy pattern intercepts calls to a target object by implementing the exact same interface. The client interacts with the proxy thinking it is the real object. Behind the scenes, the proxy wraps the real subject, managing its lifecycle (lazy creation, caching) or determining whether the client has sufficient privileges to perform the operation.
 
-| Participant | Responsibility |
-| --- | --- |
-| **Subject** | Defines a common interface for `RealSubject` and `Proxy` so that the proxy can be used anywhere the real subject is expected. |
-| **RealSubject** | Defines the real object that performs the actual core business logic. |
-| **Proxy** | Implements the `Subject` interface, maintains a reference to the `RealSubject`, controls access to it, and coordinates lifecycle operations. |
+| Participant     | Responsibility                                                                                                                               |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Subject**     | Defines a common interface for `RealSubject` and `Proxy` so that the proxy can be used anywhere the real subject is expected.                |
+| **RealSubject** | Defines the real object that performs the actual core business logic.                                                                        |
+| **Proxy**       | Implements the `Subject` interface, maintains a reference to the `RealSubject`, controls access to it, and coordinates lifecycle operations. |
 
 ---
 
@@ -43,11 +44,11 @@ classDiagram
 ## The Resource Overhead & Access Control Problem
 
 Directly instantiating and exposing heavy, remote, or sensitive resources (such as active database connection pools, 3D graphics buffers, remote network services, or payment systems) can introduce severe vulnerabilities and inefficiencies:
-* **Eager Initialization Bottlenecks**: Creating complex objects during application startup wastes memory and slows down launch times if the resource is never queried.
-* **Lack of Access Control**: Exposing raw object APIs directly to clients prevents standard security boundaries, allowing unauthorized operations (e.g. general users executing deletion commands on a database instance).
-* **Network & Overhead Costs**: Interacting with remote hosts requires boilerplate network code (socket management, serialization) which clutters local client logic.
+* **Eager Initialisation Bottlenecks**: Creating complex objects during application startup wastes memory and slows down launch times if the resource is never queried.
+* **Lack of Access Control**: Exposing raw object APIs directly to clients prevents standard security boundaries, allowing unauthorised operations (e.g. general users executing deletion commands on a database instance).
+* **Network & Overhead Costs**: Interacting with remote hosts requires boilerplate network code (socket management, serialisation) which clutters local client logic.
 
-The Proxy pattern solves this by inserting a surrogate class between the client and the real subject. The surrogate class intercepts the request to enforce lazy-loading, perform authorization checks, or manage network translation before delegating the work.
+The Proxy pattern solves this by inserting a surrogate class between the client and the real subject. The surrogate class intercepts the request to enforce lazy-loading, perform authorisation checks, or manage network translation before delegating the work.
 
 ---
 
@@ -82,7 +83,7 @@ classDiagram
 ```
 
 This C++ implementation showcases a database query execution pipeline where the `DatabaseProxy` combines:
-1. **Virtual Proxy (Lazy Loading)**: It delays establishing the expensive database connection until the client runs the first query, utilizing a thread-safe double-checked lock.
+1. **Virtual Proxy (Lazy Loading)**: It delays establishing the expensive database connection until the client runs the first query, utilising a thread-safe double-checked lock.
 2. **Protection Proxy (Access Control)**: It inspects query statements and restricts write operations (`INSERT`, `DELETE`) to clients possessing the `ADMIN` role.
 
 ```cpp
