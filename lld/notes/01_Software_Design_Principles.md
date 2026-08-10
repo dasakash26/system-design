@@ -1,6 +1,6 @@
 # Software Design Principles
 
-The core objective of software design is to manage complexity. A well designed system exhibits low coupling, high cohesion, easy maintainability, and structural extensibility. Software design principles are split into two primary categories: General Design Principles and SOLID Object Oriented Design Principles.
+The core objective of software design is to manage complexity. A well designed system exhibits low coupling, high cohesion, easy maintainability, and structural extensibility. Software design principles are split into two primary categories: General Design Principles and SOLID Object oriented Design Principles.
 
 ---
 

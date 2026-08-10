@@ -1,6 +1,6 @@
 # Template Method Design Pattern
 
-The Template Method pattern is a behavioural design pattern that defines the skeleton of an algorithm in the superclass but lets subclasses override specific steps of the algorithm without changing its structure.
+The Template Method pattern is a behavioral design pattern that defines the skeleton of an algorithm in the superclass but lets subclasses override specific steps of the algorithm without changing its structure.
 
 ---
 
@@ -252,8 +252,8 @@ Parsed JSON: {"records":[{"id":1,"value":100},{"id":2,"value":200}]}
 ## Concurrency & Design Considerations
 
 * **Non-Virtual Interface (NVI) Enforcement**: By keeping the template method itself `public` and `non-virtual`, the base class retains total authority over the execution sequence. Subclasses only fill in the behavioral gaps via `protected` or `private` virtual functions.
-* **Granular Hook Placement**: Place hook methods right before or after resource-heavy actions to allow subclasses to short-circuit operations or inject pre/post validations. Like shouldFilter can skip filter method, in the prev eg. 
-* **State and Thread Safety**: Because Template Method relies heavily on member invocation, storing mutable execution states (e.g. data buffers, open file pointers) in abstract class member variables makes the instance thread-unsafe. To design a thread-safe template pipeline:
+* **Granular Hook Placement**: Place hook methods right before or after resource-heavy actions to allow subclasses to short-circuit operations or inject pre/post validations. 
+* **State and Thread Safety**: Because Template Method relies heavily on member invocation, storing mutable execution states (e.g. data buffers, open file pointers) in abstract class member variables makes the instance thread unsafe. To design a thread safe template pipeline:
   - Keep the class stateless and pass the execution state through method arguments.
   - Or, protect member variable access via mutexes.
 
@@ -267,7 +267,7 @@ Both patterns decouple generic operations from specific implementations, but the
 
 | Aspect | Template Method | Strategy |
 | --- | --- | --- |
-| **Binding Time** | Static binding at compile-time via subclass inheritance. | Dynamic binding at run-time via object composition. |
+| **Binding Time** | Static binding at compile time via subclass inheritance. | Dynamic binding at run time via object composition. |
 | **Granularity** | Subclasses modify parts of an algorithm's internal execution steps. | Strategies replace the entire algorithm wholesale. |
 | **Dependency** | Subclasses are highly coupled to the parent class and its structure. | Strategy classes are independent and decoupled from the client context. |
 | **Hollywood Principle** | The base class calls subclass functions ("Don't call us, we'll call you"). | The client calls the Strategy's interface method. |

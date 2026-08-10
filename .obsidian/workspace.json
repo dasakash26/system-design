@@ -8,17 +8,17 @@
         "type": "tabs",
         "children": [
           {
-            "id": "7559d121a2e25b6b",
+            "id": "6323083a5ba2eff7",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "lld/notes/14_Chain of Responsibility Pattern/14_Chain of Responsibility Pattern.md",
+                "file": "lld/projects/4_Payment_Gateway/README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "14_Chain of Responsibility Pattern"
+              "title": "README"
             }
           }
         ]
@@ -41,7 +41,9 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": false
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -53,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "drawi",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -156,13 +158,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "lld/notes/14_Chain of Responsibility Pattern/14_Chain of Responsibility Pattern.md",
+                "file": "lld/projects/4_Payment_Gateway/README.md",
                 "followCursor": true,
                 "showSearch": true,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 14_Chain of Responsibility Pattern"
+              "title": "Outline"
             }
           }
         ],
@@ -170,7 +172,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 292
+    "width": 292,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -181,58 +184,59 @@
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "bases:Create new base": false,
+      "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "7559d121a2e25b6b",
+  "active": "6323083a5ba2eff7",
   "lastOpenFiles": [
-    "lld/LLD_RECAP.md",
-    "lld/notes/5_Singleton Pattern/5_Singleton Pattern.md",
-    "lld/notes/14_Chain of Responsibility Pattern/14_Chain of Responsibility Pattern.md",
-    "lld/notes/7_Decorator Pattern/7_Decorator Pattern.md",
-    "lld/notes/13_Proxy Pattern/13_Proxy Pattern.md",
-    "lld/notes/12_Template Method Pattern/12_Template Method Pattern.md",
-    "lld/notes/11_Composite Pattern/11_Composite Pattern.md",
-    "lld/notes/4_Factory Pattern/factory.cpp",
-    "lld/notes/4_Factory Pattern/4_Factory Pattern.md",
-    "Untitled.canvas",
-    "LLD_RECAP.md",
-    "lld/Agents.md",
-    "README.md",
-    "lld/projects/3_Elevator/3_Elevator.md",
+    "lld/projects/4_Payment_Gateway/README.md",
+    "lld/projects/4_Payment_Gateway/README.md",
+    "lld/projects/4_Payment_Gateway/READMEX.md",
+    "lld/projects/4_Payment_Gateway/UML.md",
+    "lld/projects/4_Payment_Gateway/readme.md",
+    "Excalidraw",
+    "lld/notes/00_OOP_Concepts.md",
+    "lld/notes/14_Chain_of_Responsibility_Pattern.md",
+    "lld/projects/4_Payment_Gateway",
+    "lld/notes/12_Template_Method_Pattern.md",
+    "lld/notes/13_Proxy_Pattern.md",
+    "lld/notes/11_Composite_Pattern.md",
+    "lld/notes/10_Facade_Pattern.md",
+    "lld/notes/09_Adapter_Pattern.md",
+    "lld/notes/08_Command_Pattern.md",
+    "lld/notes/07_Decorator_Pattern.md",
+    "lld/notes/04_Factory_Pattern.md",
+    "lld/notes/03_Strategy_Pattern.md",
+    "lld/notes/05_Singleton_Pattern.md",
     "lld/README.md",
+    "lld/projects/0_Notepad/0_Notepad.md",
+    "lld/notes/04_factory.cpp",
+    "lld/notes/00_Composite_Pattern.md",
+    "lld/notes/06_Observer_Pattern.md",
+    "lld/notes/02_Delivery_Framework.md",
+    "lld/notes/01_Software_Design_Principles.md",
+    "lld/notes/00_Chain_of_Responsibility_Pattern.md",
+    "lld/notes/00_Adapter_Pattern.md",
+    "lld/projects/1_Zomato/1_Zomato.md",
+    "lld/img/00_Notepad.png",
+    "lld/img/02_Notification.jpg",
+    "lld/img/01_Zomato.png",
+    "lld/img/02_Delivery_Framework.png",
+    "lld/img",
+    "lld/notes/4_Factory Pattern/factory.cpp",
+    "lld/notes/2_Delivery Framework/image.png",
+    "Untitled.canvas",
     "lld/notes/14_Chain of Responsibility Pattern",
     "lld/projects/2_Notification/src/ChainOfResponsibility.cpp",
     "lld/projects/2_Notification/include/ChainOfResponsibility.h",
-    "hld/system-design-primer/solutions/system_design/pastebin/README.md",
-    "hld/system-design-primer/README.md",
-    "hld/README.md",
     "hld/system-design-primer/resources/study_guide.png",
-    "hld/notes/db/01_sql_vs_nosql.md",
-    "hld/Agents.md",
-    "lld/projects/2_Notification/2_Notification.md",
     "lld/projects/3_Elevator",
-    "lld/projects/1_Zomato/1_Zomato.md",
-    "lld/notes/1_Software Design Principles/1_Software Design Principles.md",
-    "lld/notes/0_OOP Concepts/0_OOP Concepts.md",
-    "lld/projects/0_Notepad/0_Notepad.md",
-    "lld/notes/2_Delivery Framework/2_Delivery Framework.md",
-    "lld/notes/3_Strategy Pattern/3_Strategy Pattern.md",
     "hld/notes/db",
-    "hld/system-design-primer/solutions/object_oriented_design/call_center/call_center.py",
-    "hld/system-design-primer/CONTRIBUTING.md",
-    "hld/system-design-primer/solutions/object_oriented_design/parking_lot/parking_lot.py",
-    "hld/system-design-primer/solutions/object_oriented_design/parking_lot/parking_lot.ipynb",
-    "hld/system-design-primer/solutions/object_oriented_design/parking_lot/__init__.py",
     "hld/system-design-primer/solutions/system_design/web_crawler/web_crawler_basic.png",
     "hld/system-design-primer/solutions/system_design/web_crawler/web_crawler.png",
     "hld/system-design-primer/solutions/system_design/twitter/twitter_basic.png",
     "hld/system-design-primer/solutions/system_design/twitter/twitter.png",
-    "hld/system-design-primer/solutions/system_design/social_graph/social_graph_basic.png",
-    "hld/system-design-primer/solutions/system_design/social_graph/social_graph.png",
-    "hld/system-design-primer/solutions/system_design/scaling_aws/scaling_aws_7.png",
-    "hld/system-design-primer/solutions/system_design/scaling_aws/scaling_aws_6.png",
-    "hld/system-design-primer/solutions/system_design/scaling_aws/scaling_aws_5.png",
     "Untitled 2.canvas",
     "Untitled 1.canvas",
     "Projects/1_Zomato/1_Zomato.canvas",

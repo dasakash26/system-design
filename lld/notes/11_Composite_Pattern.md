@@ -81,7 +81,7 @@ classDiagram
         +getName() string
         +print(indent int) void
         +getSize() int
-        +add(node unique_ptr~FileSystemNode~) void
+        +add(node FileSystemNode*) void
         +remove(node FileSystemNode*) void
     }
     class File {
@@ -95,7 +95,7 @@ classDiagram
         +Directory(name string)
         +print(indent int) void
         +getSize() int
-        +add(node unique_ptr~FileSystemNode~) void
+        +add(node FileSystemNode*) void
         +remove(node FileSystemNode*) void
     }
 
@@ -130,13 +130,10 @@ public:
         return name;
     }
 
-    // Uniform operations
     virtual void print(int indent = 0) const = 0;
     virtual int getSize() const = 0;
 
-    // Composite management operations (defined on base for Uniformity)
-    // Note: By default, these throw or do nothing for Leaf classes.
-    virtual void add(unique_ptr<FileSystemNode> node) {
+    virtual void add(FileSystemNode* node) {
         throw runtime_error("Operation 'add' not supported on this node type");
     }
 
@@ -171,7 +168,7 @@ private:
 
 public:
     explicit Directory(string name) : FileSystemNode(std::move(name)) {}
-
+    
     void print(int indent = 0) const override {
         string indentation(indent, ' ');
         cout << indentation << "+ [Directory] " << name << "\n";
@@ -181,17 +178,16 @@ public:
     }
 
     int getSize() const override {
-        // Recursively sum up sizes of all children
         return accumulate(children.begin(), children.end(), 0, 
             [](int sum, const unique_ptr<FileSystemNode>& child) {
                 return sum + child->getSize();
             });
     }
 
-    void add(unique_ptr<FileSystemNode> node) override {
+    void add(FileSystemNode* node) override {
         if (!node) return;
         cout << "[Directory: " << name << "] Adding: " << node->getName() << "\n";
-        children.push_back(std::move(node));
+        children.push_back(unique_ptr<FileSystemNode>(node));
     }
 
     void remove(FileSystemNode* node) override {
@@ -232,17 +228,17 @@ int main() {
         FileSystemNode* rawConfigPtr = config.get();
 
         // 4. Assemble the hierarchy
-        rawUserPtr->add(std::move(file1));
-        rawUserPtr->add(std::move(file2));
-        rawUserPtr->add(std::move(config));
+        rawUserPtr->add(file1.release());
+        rawUserPtr->add(file2.release());
+        rawUserPtr->add(config.release());
 
-        rawHomePtr->add(std::move(userDir));
-        rootDir->add(std::move(homeDir));
+        rawHomePtr->add(userDir.release());
+        rootDir->add(homeDir.release());
 
         auto systemDir = make_unique<Directory>("sys");
         auto kernelFile = make_unique<File>("kernel.sys", 10485760); // ~10MB
-        systemDir->add(std::move(kernelFile));
-        rootDir->add(std::move(systemDir));
+        systemDir->add(kernelFile.release());
+        rootDir->add(systemDir.release());
 
         // 5. Client interacts with the tree uniformly
         cout << "\n--- Initial Directory Tree ---\n";
@@ -265,7 +261,7 @@ int main() {
         FileSystemNode* leafNode = dummyFile.get();
         
         // This will throw runtime_error as File does not override 'add'
-        leafNode->add(make_unique<File>("sub-dummy.txt", 10));
+        leafNode->add(new File("sub-dummy.txt", 10));
 
     } catch (const exception& ex) {
         cerr << "Expected Exception Caught: " << ex.what() << "\n";
@@ -317,30 +313,17 @@ Expected Exception Caught: Operation 'add' not supported on this node type
 
 ---
 
+## Concurrency & Design Considerations
 
-## Design Considerations
-
-* **Hierarchical Cache Invalidation**: If traversing the composite tree is computationally expensive (e.g., summing file sizes across a deeply nested folder hierarchy), composite nodes can cache cumulative results. However, this introduces the complexity of hierarchical cache invalidation: any addition, removal, or update to a child node must trigger a recursive invalidation upward, notifying all parent composite nodes in the chain to clear their cached values.
-
-
----
+* **Thread Safe Traversal**: Directory structures can be read concurrently using `std::shared_mutex` for read-only access, allowing multiple readers while blocking writers.
+* **Recursive Locks**: Deep tree traversal with recursive mutex locks prevents deadlocks when a thread may re-enter a locked node.
+* **Atomic Counters**: Computing cumulative sizes via atomic counters enables lock-free reads at the cost of slightly inconsistent reads during updates.
+* **Lock-Free Alternatives**: For high read-heavy workloads, consider immutable directory snapshots or RCU (Read-Copy-Update) patterns.
 
 ## Design Tradeoffs
 
-### Uniformity vs. Type Safety
-
-The main architectural decision when implementing the Composite pattern is deciding where to declare child-management methods (`add`, `remove`, `getChild`):
-
-| Aspect              | Uniformity (Declared in Component)                                                                         | Type Safety (Declared only in Composite)                                                                          |
-| ------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **Interface**       | Clients treat all nodes exactly the same. No type casting is required.                                     | Clients must distinguish between leaf and composite nodes before calling management operations.                   |
-| **Error Handling**  | Leaves must provide default dummy behaviors or throw exceptions at runtime if child operations are called. | Errors are caught at compile time. It is impossible to add a child to a leaf node.                                |
-| **Best Suited For** | High-level operations where the client should be completely unaware of tree composition details.           | Low-level libraries or compile-safe environments where type correctness overrides runtime abstraction simplicity. |
-
-### Composite vs. Decorator vs. Flyweight
-
-| Pattern       | Structural Focus              | Purpose                                                                        |
-| ------------- | ----------------------------- | ------------------------------------------------------------------------------ |
-| **Composite** | Tree hierarchy representation | Treats groups of objects and individual objects identically                    |
-| **Decorator** | Linear wrapper composition    | Adds dynamic responsibilities to objects without modifying the class interface |
-| **Flyweight** | Shared leaf nodes             | Minimizes memory usage by sharing common fine-grained state                    |
+| Aspect | Uniformity (Declared in Component) | Type Safety (Declared only in Composite) |
+| --- | --- | --- |
+| **Interface** | Clients treat all nodes exactly the same. No type casting is required. | Clients must distinguish between leaf and composite nodes before calling management operations. |
+| **Error Handling** | Leaves must provide default dummy behaviors or throw exceptions at runtime if child operations are called. | Errors are caught at compile time. It is impossible to add a child to a leaf node. |
+| **Best Suited For** | High-level operations where the client should be completely unaware of tree composition details. | Low-level libraries or compile-safe environments where type correctness overrides runtime abstraction simplicity. |

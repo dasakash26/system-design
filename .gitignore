@@ -54,3 +54,15 @@ install_manifest.txt
 .idea/
 .vs/
 compile_commands.json
+
+# Obsidian
+# to only exclude plugin configuration. Might be useful to prevent some plugin from exposing sensitive data
+.obsidian/plugins
+# OR only to exclude workspace cache
+.obsidian/workspace.json
+# to exclude workspace cache specific to mobile devices
+.obsidian/workspace-mobile.json
+
+# Add below lines to exclude OS settings and caches
+.trash/
+.DS_Store

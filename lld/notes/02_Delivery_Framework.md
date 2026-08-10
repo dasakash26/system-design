@@ -1,14 +1,12 @@
 # LLD Delivery Framework
 
-This framework provides a structured approach to solving Low Level Design (LLD) and Object Oriented Design (OOD) problems during technical interviews. It ensures a logical transition from a vague initial prompt to a complete, thread safe, and validated class implementation within a typical 45 minute session.
+This framework provides a structured approach to solving Low Level Design (LLD) and object oriented Design (OOD) problems during technical interviews. It ensures a logical transition from a vague initial prompt to a complete, thread safe, and validated class implementation within a typical 45 minute session.
 
 ---
 
 ## The Diagram
 
 Below is the conceptual diagram illustrating the framework phases:
-
-![image.png](notes/2_Delivery%20Framework/image.png)
 
 ---
 

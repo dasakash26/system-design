@@ -1,6 +1,6 @@
 # Object Oriented Programming (OOP) Concepts
 
-Object Oriented Programming (OOP) is a programming paradigm centered around objects rather than functions or logic. It models real world entities, promotes code reuse, and manages complexity in large systems by encapsulating state and behavior within cohesive units.
+Object oriented Programming (OOP) is a programming paradigm centered around objects rather than functions or logic. It models real world entities, promotes code reuse, and manages complexity in large systems by encapsulating state and behavior within cohesive units.
 
 The core of OOP rests on four fundamental pillars:
 
@@ -21,7 +21,7 @@ Exposing only controlled public interfaces and hiding internal data representati
 
 ### Low Level Mechanics
 * **Contiguous Memory**: Class data members are laid out contiguously in memory, aligned according to the compiler's padding and packing rules.
-* **Compile Time Enforcement**: Access specifiers (`private` and `protected`) are enforced strictly at compile time. At runtime, access boundaries disappear, but invariants remain protected by the compiled interface logic.
+* **Compile time enforcement**: Access specifiers (`private` and `protected`) are enforced strictly at compile time. At run time, access boundaries disappear, but invariants remain protected by the compiled interface logic.
 
 ### C++ Example
 
@@ -159,7 +159,7 @@ public:
 
 ## Polymorphism
 
-Polymorphism allows one interface to represent multiple forms of behavior. It is split into static (compile time) and dynamic (runtime) mechanisms.
+Polymorphism allows one interface to represent multiple forms of behavior. It is split into static (compile time) and dynamic (run time) mechanisms.
 
 | Dimension | Static Polymorphism | Dynamic Polymorphism |
 | --- | --- | --- |

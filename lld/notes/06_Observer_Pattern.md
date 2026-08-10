@@ -156,10 +156,14 @@ public:
         }
 
         // Notify observers asynchronously to prevent slow observer blocking
+        vector<thread> notificationThreads;
         for (ISubscriber* sub : subscribersSnapshot) {
-            thread([sub, title]() {
+            notificationThreads.emplace_back([sub, title]() {
                 sub->update(title);
-            }).detach();
+            });
+        }
+        for (auto& t : notificationThreads) {
+            t.join();
         }
     }
 };
