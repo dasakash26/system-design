@@ -322,8 +322,21 @@ Expected Exception Caught: Operation 'add' not supported on this node type
 
 ## Design Tradeoffs
 
-| Aspect | Uniformity (Declared in Component) | Type Safety (Declared only in Composite) |
-| --- | --- | --- |
-| **Interface** | Clients treat all nodes exactly the same. No type casting is required. | Clients must distinguish between leaf and composite nodes before calling management operations. |
-| **Error Handling** | Leaves must provide default dummy behaviors or throw exceptions at runtime if child operations are called. | Errors are caught at compile time. It is impossible to add a child to a leaf node. |
-| **Best Suited For** | High-level operations where the client should be completely unaware of tree composition details. | Low-level libraries or compile-safe environments where type correctness overrides runtime abstraction simplicity. |
+| Advantages & SOLID Alignment | Drawbacks & Limitations |
+| --- | --- |
+| **Uniform Client Interface**: Clients treat individual objects and compositions uniformly through the base `Component` interface, eliminating type-checking conditionals. | **Overgeneralization**: The base `Component` interface may expose methods that are meaningless or expensive for leaf nodes (e.g., `add` or `remove` on a `File`). |
+| **OCP Compliance**: New leaf or composite types can be introduced without modifying existing client code that traverses the tree. | **Runtime Error Handling**: Leaves must either provide no-op implementations or throw exceptions for composite-only operations, pushing errors to runtime instead of compile time. |
+| **Recursive Composition**: Complex tree structures are built recursively without the client needing to know the depth or branching factor. | **Type Safety Loss**: Clients cannot rely on the type system to guarantee that a node supports child management operations. |
+
+---
+
+## Comparison
+
+Composite is often compared with Iterator and Decorator because all three deal with object structures and traversal.
+
+| Dimension | Composite | Iterator | Decorator |
+| --- | --- | --- | --- |
+| **Primary Intent** | Represents part-whole hierarchies with uniform treatment of leaves and composites. | Traverses a collection without exposing its internal storage. | Attaches additional responsibilities to objects dynamically. |
+| **Structure** | Tree structure where each node implements the same interface. | Cursor object that walks over existing data. | Wrapper chain where each wrapper implements the same interface as the wrapped object. |
+| **Client Knowledge** | Client is unaware of node types; it calls the same method on any node. | Client is unaware of storage layout; it uses `next()` and `hasNext()`. | Client is unaware of wrappers; it calls the same method on the outermost object. |
+| **Use When** | You need to treat single objects and compositions uniformly. | You need controlled traversal of a collection without exposing storage details. | You need to layer cross-cutting concerns (caching, logging) transparently. |

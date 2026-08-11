@@ -265,7 +265,20 @@ public:
 
 ## Design Tradeoffs
 
-| Advantages                                                                                                                                                                             | Drawbacks & Limitations                                                                                                                                                                     |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Loose Coupling**: The Subject only knows that its Observers implement the `ISubscriber` interface. It does not need to know their concrete classes, simplifying codebase modularity. | **Dangling References**: In languages without garbage collection (e.g. C++), managing observer lifetimes requires extra care to prevent the lapsed listener problem.                        |
-| **Open/Closed Principle (OCP)**: New observer types can be introduced without altering the subject's implementation.                                                                   | **Cascade Updates & Performance**: A single update in the Subject might trigger a cascade of updates across observers, leading to performance degradation if not dispatched asynchronously. |
+| Advantages & SOLID Alignment | Drawbacks & Limitations |
+| --- | --- |
+| **Loose Coupling**: The Subject only knows that its Observers implement the `ISubscriber` interface. It does not need to know their concrete classes, simplifying codebase modularity. | **Dangling References**: In languages without garbage collection (e.g. C++), managing observer lifetimes requires extra care to prevent the lapsed listener problem. |
+| **Open/Closed Principle (OCP)**: New observer types can be introduced without altering the subject's implementation. | **Cascade Updates & Performance**: A single update in the Subject might trigger a cascade of updates across observers, leading to performance degradation if not dispatched asynchronously. |
+
+---
+
+## Comparison
+
+Observer is often compared with Mediator and Pub/Sub because all three handle event-driven communication.
+
+| Dimension | Observer | Mediator | Pub/Sub |
+| --- | --- | --- | --- |
+| **Coupling** | Subject knows observers directly; observers know the subject. | Colleagues know only the mediator; mediator knows all colleagues. | Publishers and subscribers are completely anonymous to each other. |
+| **Communication Direction** | One-to-many direct notification. | Many-to-many through a central hub. | One-to-many through a broker or event bus. |
+| **Lifecycle Management** | Observers must explicitly subscribe and unsubscribe. | Mediator manages colleague registration internally. | Broker handles subscription routing and message delivery. |
+| **Use When** | You need direct, tight notification between known parties. | You want to centralize complex communication logic in one place. | You need decoupled, scalable broadcast across unknown consumers. |

@@ -229,8 +229,11 @@ int main() {
 
 ## Design Tradeoffs
 
-| Advantages                                                                                                                                                       | Drawbacks & Limitations                                                                                                                                                                                                                                    |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Decoupling**: Shields clients from complex internal changes to subsystem APIs.                                                                                 | **God Object Danger**: Facades can grow into monolithic classes that handle too much execution logic.                                                                                                                                                      |
-| **Fallback Escape**: Advanced users can bypass the Facade and call subsystem methods directly if custom workflows are needed.                                    | **OCP Violation at the Facade**: Adding a new subsystem operation requires modifying the Facade class itself. The Facade is open to extension only if the subsystem provides what it needs, new capabilities not present in subsystems force Facade edits. |
-| **Compilation Firewall**: Hiding subsystem headers behind the Facade implementation file prevents client recompilation cascades when subsystem internals change. | **Single Point of Failure**: All client interactions funnel through the Facade. A bug or performance bottleneck in the Facade affects every caller, whereas direct subsystem access would isolate the impact.                                              |
+| Advantages | Drawbacks & Limitations |
+| --- | --- |
+| **Decoupling**: Shields clients from complex internal changes to subsystem APIs. | **God Object Danger**: Facades can grow into monolithic classes that handle too much execution logic. |
+| **Fallback Escape**: Advanced users can bypass the Facade and call subsystem methods directly if custom workflows are needed. | **OCP Violation at the Facade**: Adding a new subsystem operation requires modifying the Facade class itself. The Facade is open to extension only if the subsystem provides what it needs, new capabilities not present in subsystems force Facade edits. |
+| **Compilation Firewall**: Hiding subsystem headers behind the Facade implementation file prevents client recompilation cascades when subsystem internals change. | **Single Point of Failure**: All client interactions funnel through the Facade. A bug or performance bottleneck in the Facade affects every caller, whereas direct subsystem access would isolate the impact. |
+
+---
+

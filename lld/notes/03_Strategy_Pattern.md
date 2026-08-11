@@ -237,3 +237,16 @@ int main() {
 | --- | --- |
 | **OCP Compliance**: You can introduce new payment methods (e.g. `CryptoPayment`) without modifying existing checkout code. | **Subclass Proliferation**: Each algorithm requires a new class, increasing the codebase class count. |
 | **SRP Alignment**: Separates checkout orchestration logic from concrete integration details. | **Client Awareness**: The calling client must understand the differences between strategies to instantiate and inject the correct one. |
+
+---
+
+## Comparison
+
+Strategy is often compared with State and Command because all three delegate behavior to separate objects.
+
+| Dimension | Strategy | State | Command |
+| --- | --- | --- | --- |
+| **Primary Intent** | Swaps interchangeable algorithms at runtime. | Models lifecycle-dependent behavior changes. | Encapsulates a request as an object for queuing or undo. |
+| **Who Controls Selection** | The client or context selects the strategy. | The context changes its own state based on transitions. | The invoker triggers execution; the client creates commands. |
+| **Object Relationship** | Context holds one strategy at a time. | Context holds one state at a time, transitioning between them. | Invoker holds commands; commands reference receivers. |
+| **Use When** | You need to choose between algorithms without changing the context. | Behavior depends on the current lifecycle state. | You need undo/redo, queuing, or logging of requests. |

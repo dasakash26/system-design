@@ -180,8 +180,11 @@ To prevent dynamic instantiations from crashing under concurrent conditions, we 
 
 ## Design Tradeoffs
 
-| Advantages | Drawbacks & SOLID Violations | Mitigation |
-| --- | --- | --- |
-| **Unified Control**: Guarantees a single instance, preventing duplicate connections and resource conflicts. | **SRP Violation**: Class manages both its core logic and its own lifecycle. | Decouple lifetime orchestration to a Dependency Injection container. |
-| **Lazy Loading**: Delays allocation overhead until the object is actually requested by the client. | **State Pollution**: Hidden global state makes APIs misleading and leaks data between tests. | Inject the shared instance as a constructor dependency. |
-| | **Mocking Limits**: Concrete static accessors cannot be substituted with mock objects. | Have the singleton implement an interface and pass an interface reference. |
+| Advantages | Drawbacks & SOLID Violations |
+| --- | --- |
+| **Unified Control**: Guarantees a single instance, preventing duplicate connections and resource conflicts. | **SRP Violation**: Class manages both its core logic and its own lifecycle. |
+| **Lazy Loading**: Delays allocation overhead until the object is actually requested by the client. | **State Pollution**: Hidden global state makes APIs misleading and leaks data between tests. |
+| | **Mocking Limits**: Concrete static accessors cannot be substituted with mock objects. |
+
+---
+

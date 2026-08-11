@@ -274,3 +274,16 @@ This is the architecture used in document editors, terminal shells (`Ctrl+Z`), a
 | --- | --- |
 | **OCP Compliance**: You can add new command subclasses (e.g. `ThermostatCommand`) without modifying the invoker or existing commands. | **Subclass Proliferation**: Every unique command behavior requires a separate class definition, leading to class explosion. |
 | **SRP Alignment**: Segregates request triggering logic (Invoker), request parameter binding (Command), and core execution logic (Receiver). | **Call Indirection**: Introduces additional execution layers, which can complicate debugging trace logs. |
+
+---
+
+## Comparison
+
+Command is often compared with Strategy and Memento because all three encapsulate behavior or requests.
+
+| Dimension | Command | Strategy | Memento |
+| --- | --- | --- | --- |
+| **Primary Intent** | Encapsulates a request as an object for undo/redo or queuing. | Encapsulates an interchangeable algorithm for runtime selection. | Captures and externalizes an object's internal state for later restoration. |
+| **Object Lifespan** | Commands are typically short-lived; they execute and may be discarded or stored in a history stack. | Strategies are typically long-lived; they are selected once and reused across many operations. | Mementos are snapshots; they store state and are passed to a caretaker for safekeeping. |
+| **State Mutation** | Commands may mutate receiver state and support undo by reversing those mutations. | Strategies do not inherently support undo; they simply execute an algorithm. | Mementos do not execute logic; they only store and restore state. |
+| **Use When** | You need undo/redo, queuing, logging, or transactional request execution. | You need to swap algorithms without changing the context class. | You need to snapshot and restore object state without violating encapsulation. |

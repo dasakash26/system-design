@@ -277,3 +277,25 @@ int main() {
 * **Factory Caching / Object Pooling**: For expensive products (like database connection adapters or network sockets), the concrete factory can encapsulate a thread safe object pool to recycle instances, minimizing memory churn.
 
 ---
+
+## Design Tradeoffs
+
+| Advantages & SOLID Alignment | Drawbacks & Limitations |
+| --- | --- |
+| **OCP Compliance**: New product types are introduced via new `ConcreteCreator` subclasses, leaving existing creator and client code untouched. | **Subclass Explosion**: Each product family requires a corresponding creator subclass, increasing the total class count. |
+| **SRP Alignment**: Separates object creation orchestration (`Creator`) from product-specific initialization logic (`ConcreteProduct`). | **Client Configuration Burden**: The client must still select or configure the appropriate creator subclass, which can reintroduce conditional branching at the entry point. |
+| **Centralized Control**: The base `Creator` can enforce validation, logging, or caching policies in one place before delegating to the subclass. | **Inheritance Coupling**: Creators are tightly coupled to their product hierarchies; changing the product interface forces changes across all creator subclasses. |
+
+---
+
+## Comparison
+
+Factory Method is often confused with Abstract Factory and Builder because all three encapsulate object creation.
+
+| Pattern | Instantiation Granularity | What Varies | Use When |
+| --- | --- | --- | --- |
+| **Factory Method** | Single product per creator subclass. | Concrete product type. | You need to defer instantiation to subclasses. |
+| **Abstract Factory** | Families of related products. | Product families and variants. | You need compatible product suites. |
+| **Builder** | Step-by-step assembly of one complex product. | Construction process and optional parts. | The same product can be built in different representations. |
+
+---

@@ -215,12 +215,14 @@ int main() {
 | **SRP Alignment**: Segregates individual concerns (caching, logging) into separate wrapper classes. | **Removal Complexity**: Once nested, it is difficult to inspect or remove a specific decorator from deep within a wrapper chain. |
 | **Extensibility**: Allows nesting and combining multiple independent behaviors dynamically at runtime. | **Debugging Indirection**: Call tracing and debugging become complex due to deep delegation call stacks passing through multiple wrappers. |
 
-### Decorator vs. Strategy vs. Adapter
+---
 
-All three patterns wrap or delegate to another object. The intent determines the choice:
+## Comparison
 
-| Pattern | Interface Change | Behavior Change | Use When |
+Decorator is often compared with Strategy and Adapter because all three wrap or delegate to another object.
+
+| Dimension | Decorator | Strategy | Adapter |
 | --- | --- | --- | --- |
-| **Decorator** | None (same interface) | Adds behavior around the original | Layering cross cutting concerns transparently |
-| **Strategy** | None (same context) | Replaces the core algorithm | Swapping interchangeable algorithms at runtime |
-| **Adapter** | Yes (converts interface) | No new behavior, only translation | Bridging incompatible existing interfaces |
+| **Interface Change** | None (same interface) | None (same context) | Yes (converts interface) |
+| **Behavior Change** | Adds behavior around the original | Replaces the core algorithm | No new behavior, only translation |
+| **Use When** | Layering cross-cutting concerns transparently | Swapping interchangeable algorithms at runtime | Bridging incompatible existing interfaces |

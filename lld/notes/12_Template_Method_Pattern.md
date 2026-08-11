@@ -261,9 +261,17 @@ Parsed JSON: {"records":[{"id":1,"value":100},{"id":2,"value":200}]}
 
 ## Design Tradeoffs
 
-### Template Method vs. Strategy
+| Advantages & SOLID Alignment | Drawbacks & Limitations |
+| --- | --- |
+| **DRY (Don't Repeat Yourself)**: Consolidation of invariant workflow logic into the parent class prevents code duplication. | **Liskov Substitution Principle (LSP) Risks**: Subclasses can violate base class semantic expectations in virtual functions (e.g., throwing unexpected exceptions or entering infinite loops), disrupting the main template method flow. |
+| **Open-Closed Principle (OCP)**: New subclasses can introduce specialized parsing/processing behaviors without modifying the parent orchestration pipeline. | **Inheritance Limitations**: C++ only supports single-inheritance patterns cleanly; subclassing a complex AbstractClass locks the subclass from inheriting other base structures. |
+| **Hollywood Principle Enforcement**: The base class controls execution order, preventing subclasses from accidentally skipping critical steps. | **Rigidity in Variation**: Subclasses can only override predefined hook points. If the algorithm structure itself needs to change, the entire pattern must be re-engineered. |
 
-Both patterns decouple generic operations from specific implementations, but they differ in binding and composition:
+---
+
+## Comparison
+
+Template Method is often compared with Strategy because both decouple generic operations from specific implementations.
 
 | Aspect | Template Method | Strategy |
 | --- | --- | --- |
@@ -271,11 +279,3 @@ Both patterns decouple generic operations from specific implementations, but the
 | **Granularity** | Subclasses modify parts of an algorithm's internal execution steps. | Strategies replace the entire algorithm wholesale. |
 | **Dependency** | Subclasses are highly coupled to the parent class and its structure. | Strategy classes are independent and decoupled from the client context. |
 | **Hollywood Principle** | The base class calls subclass functions ("Don't call us, we'll call you"). | The client calls the Strategy's interface method. |
-
-### Advantages & SOLID Alignment
-* **DRY (Don't Repeat Yourself)**: Consolidation of invariant workflow logic into the parent class prevents code duplication.
-* **Open-Closed Principle (OCP)**: New subclasses can introduce specialized parsing/processing behaviors without modifying the parent orchestration pipeline.
-
-### Limitations
-* **Liskov Substitution Principle (LSP) Risks**: Subclasses can violate base class semantic expectations in virtual functions (e.g., throwing unexpected exceptions or entering infinite loops), disrupting the main template method flow.
-* **Inheritance Limitations**: C++ only supports single-inheritance patterns cleanly; subclassing a complex AbstractClass locks the subclass from inheriting other base structures.

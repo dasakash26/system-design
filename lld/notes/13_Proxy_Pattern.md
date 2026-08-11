@@ -227,11 +227,26 @@ int main() {
 
 ---
 
+## Concurrency & Design Considerations
+
+* **Lazy Initialization Safety**: When creating the real subject inside the virtual proxy lazily, standard double-checked locking using a mutex (e.g. `std::mutex` and `std::lock_guard`) must be used. Failure to synchronize instantiation will result in multiple threads triggering duplicate resource allocations or corrupting heap memory blocks.
+* **Stateless Proxies**: Proxy instances that only perform access control checks or interface translation are inherently thread safe and can be shared across threads without synchronization.
+* **Stateful Proxy Coordination**: If the proxy maintains mutable state (such as connection pools, caches, or user session data), access must be serialized using `std::mutex` or `std::shared_mutex` to prevent data races during concurrent delegation.
+
+---
+
 ## Design Tradeoffs
 
-### Proxy vs. Decorator vs. Adapter
+| Advantages & SOLID Alignment | Drawbacks & Limitations |
+| --- | --- |
+| **Single Responsibility Principle (SRP)**: Segregates the access rules (authorization, validation) and initialization performance policies into separate proxy structures, leaving the real subject focused strictly on core business operations. | **Increased Latency**: Adding a proxy introduces a layer of indirection, which can increase execution times slightly for every single command request. |
+| **Separation of Concerns**: Hides heavy instantiation footprints or socket negotiation interfaces behind simple standard methods. | **Code Overhead**: Requires creating a common interface and duplicate method structures for all subject routines, leading to code bloat for large APIs. |
 
-All three patterns wrap an object and delegate calls, but their structural intent separates them:
+---
+
+## Comparison
+
+Proxy is often compared with Decorator and Adapter because all three wrap an object and delegate calls.
 
 | Dimension | Proxy | Decorator | Adapter |
 | --- | --- | --- | --- |
@@ -239,26 +254,12 @@ All three patterns wrap an object and delegate calls, but their structural inten
 | **Interface Match** | Interface signature matches the real subject exactly. | Interface signature matches the wrapped component exactly. | Changes/translates interface signatures. |
 | **Instantiation** | The Proxy usually instantiates and manages the target internally. | The Decorator is passed the target externally via its constructor. | The Adapter is passed the target externally via its constructor. |
 
-### Proxy vs. Decorator vs. Adapter - Comparison
+---
 
-| Aspect | Proxy | Decorator | Adapter |
-| --- | --- | --- | --- |
-| **Primary intent** | Controls access and coordinates lifecycle of the target. | Dynamically aggregates new responsibilities to the target. | Converts incompatible interface signatures. |
-| **Interface match** | Interface signature matches the real subject exactly. | Interface signature matches the wrapped component exactly. | Changes/translates interface signatures. |
-| **Instantiation** | The Proxy usually instantiates and manages the target internally. | The Decorator is passed the target externally via its constructor. | The Adapter is passed the target externally via its constructor. |
+## Design Considerations
 
-### Advantages & SOLID Alignment
-* **Single Responsibility Principle (SRP)**: Segregates the access rules (authorization, validation) and initialization performance policies into separate proxy structures, leaving the real subject focused strictly on core business operations.
-* **Separation of Concerns**: Hides heavy instantiation footprints or socket negotiation interfaces behind simple standard methods.
-
-### Limitations
-* **Increased Latency**: Adding a proxy introduces a layer of indirection, which can increase execution times slightly for every single command request.
-* **Code Overhead**: Requires creating a common interface and duplicate method structures for all subject routines, leading to code bloat for large APIs.
-
-### Design Considerations
 * **Proxy Class Varieties**:
   1. **Virtual Proxy**: Delays creation of memory/CPU-heavy resources (lazy initialization) until first access.
   2. **Protection Proxy**: Controls permissions by acting as an access firewall, intercepting requests to validate client credentials/roles.
   3. **Caching Proxy**: Intercepts requests, checking a local database/dictionary before delegating to the expensive target subject.
   4. **Smart Reference / Logging Proxy**: Performs additional housekeeping operations when an object is accessed (such as locking the object or counting reference allocations).
-* **Lazy Initialization Concurrency Safety**: When creating the real subject inside the virtual proxy lazily, standard double-checked locking using a mutex (e.g. `std::mutex` and `std::lock_guard`) must be used. Failure to synchronize instantiation will result in multiple threads triggering duplicate database socket allocations or corrupting the heap memory block.

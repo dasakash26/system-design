@@ -197,3 +197,16 @@ int main() {
 | --- | --- |
 | **OCP Compliance**: Introduce new adapter configurations without altering existing client code. | **Indirection Cost**: Adds wrapping overhead and increases call stack depth. |
 | **SRP Alignment**: Separates client execution logic from complex data conversion logic. | **Code Bloat**: Requires creating new translation helper classes for minor API updates. |
+
+---
+
+## Comparison
+
+Adapter is often compared with Facade and Proxy because all three wrap or mediate access to another object.
+
+| Dimension | Adapter | Facade | Proxy |
+| --- | --- | --- | --- |
+| **Primary Intent** | Converts an existing incompatible interface into the one the client expects. | Provides a simplified unified interface to a complex subsystem. | Controls access and coordinates lifecycle of the target. |
+| **Interface Match** | Changes/translates interface signatures. | Defines a new simplified interface. | Matches the real subject's interface exactly. |
+| **Relationship to Existing Code** | Wraps an existing class with a mismatched interface. | Sits in front of a set of existing subsystem classes. | Sits in front of a single existing subject class. |
+| **Use When** | You need to reuse legacy or third-party code without changing it. | You want to simplify a complex subsystem for common use cases. | You need to add access control, lazy loading, or caching around an object. |
